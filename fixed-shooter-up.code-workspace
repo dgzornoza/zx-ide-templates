@@ -1,0 +1,31 @@
+{
+    "folders": [
+	    {
+            "name": "docs",
+            "path": "docs"
+        },
+        {
+            "name": "fixed-shooter-up",
+            "path": "templates/fixed-shooter-up"
+        },
+    ],
+    "settings": {		
+        "eslint.workingDirectories": [
+            {
+                "directory": "fixed-shooter-up"
+            },
+        ],
+        "files.exclude": {
+            "**/bin/**": false,
+            "**/obj/**": true,
+        },
+        "files.watcherExclude": {
+            "**/bin/**": false,
+            "**/obj/**": true,
+        },
+        "search.exclude": {
+            "**/bin/**": false,
+            "**/obj/**": true,
+        },
+    }
+}

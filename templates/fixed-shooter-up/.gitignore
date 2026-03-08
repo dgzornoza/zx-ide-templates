@@ -1,0 +1,66 @@
+# -----------------------------------------
+# z88dk build artifacts
+# -----------------------------------------
+*.bin
+*.tap
+*.tzx
+*.sna
+*.dsk
+*.rom
+*.ihx
+*.lk
+*.map
+*.noi
+*.sym
+*.o
+*.opt
+*.asm
+*.lst
+*.rel
+*.tmp
+*.lis
+*.c.lis
+
+# -----------------------------------------
+# Common output directories (make)
+# -----------------------------------------
+build/
+out/
+obj/
+tmp/
+.tmp/
+dist/
+
+# Si usas zcc con -create-app, a veces genera subcarpetas
+app/
+
+# -----------------------------------------
+# C / general build artifacts
+# -----------------------------------------
+*.a
+*.so
+*.dll
+*.exe
+*.out
+
+# -----------------------------------------
+# Editor / IDE
+# -----------------------------------------
+# VS Code
+*.code-workspace
+
+# CLion / JetBrains
+.idea/
+
+# -----------------------------------------
+# OS-specific
+# -----------------------------------------
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
+*~

@@ -1,0 +1,11 @@
+# Ignore pragma compiler file
+zpragma.inc
+
+# Build outputs
+build/
+bin/
+obj/
+
+# Other
+*.sna
+*.lis

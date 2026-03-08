@@ -1,0 +1,24 @@
+{
+    "name": "gamewatch-template",
+    "image": "dgzornoza/zxide-dev:latest",
+    "runArgs": [
+        "--name=${localWorkspaceFolderBasename}",
+		"--add-host=host.docker.internal:host-gateway"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+				"dgzornoza.zxide",
+                "mutantdino.resourcemonitor",
+                "ms-vscode.cpptools-extension-pack",
+                "maziac.dezog",
+                "maziac.asm-code-lens",
+                "maziac.hex-hover-converter",
+                "maziac.sna-fileviewer",
+                "maziac.z80-instruction-set",
+                "ms-vscode.makefile-tools",
+                "theNestruo.z80-asm-meter"
+            ]
+        }
+    }
+}

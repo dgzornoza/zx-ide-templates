@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "make",
+            "detail": "Build project",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "args": [
+                "COMPILER=sdcc",
+                "CLIB=sdcc_iy",
+                "CRT=31",
+                "C_OPT_FLAGS=-SO3 --opt-code-size",
+                "LINKER_FLAGS=",
+                "CREATE_SNA=true",
+                "CREATE_TAP=false"
+            ],
+            "problemMatcher": [
+                {
+                    "owner": "zcc",
+                    "pattern": [
+                        {
+                            "regexp": "^(.*?):(\\d+):.*(warning|error).*:\\s+(.*)$",
+                            "file": 1,
+                            "line": 2,
+                            "severity": 3,
+                            "message": 4
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Clean All",
+            "type": "shell",
+            "command": "make clean_all",
+            "problemMatcher": [],
+            "detail": "Clean all build and object files"
+        }
+    ]
+}
