@@ -20,7 +20,7 @@
             "z88dkv2": [
                 {
                     "path": "./bin/**/*.lis",
-                    "mapFile": "./bin/fixed-shooter-up.map",
+                    "mapFile": "./bin/fixed-shoot-em-up.map",
                     "srcDirs": [
                         ""
                     ]
@@ -54,7 +54,7 @@
             "z88dkv2": [
                 {
                     "path": "./bin/**/*.lis",
-                    "mapFile": "./bin/fixed-shooter-up.map",
+                    "mapFile": "./bin/fixed-shoot-em-up.map",
                     "srcDirs": [
                         ""
                     ]
@@ -88,7 +88,7 @@
             "z88dkv2": [
                 {
                     "path": "./bin/**/*.lis",
-                    "mapFile": "./bin/fixed-shooter-up.map",
+                    "mapFile": "./bin/fixed-shoot-em-up.map",
                     "srcDirs": [
                         ""
                     ]

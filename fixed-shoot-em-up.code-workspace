@@ -5,14 +5,14 @@
             "path": "docs"
         },
         {
-            "name": "fixed-shooter-up",
-            "path": "templates/fixed-shooter-up"
+            "name": "fixed-shoot-em-up",
+            "path": "templates/fixed-shoot-em-up"
         },
     ],
     "settings": {		
         "eslint.workingDirectories": [
             {
-                "directory": "fixed-shooter-up"
+                "directory": "fixed-shoot-em-up"
             },
         ],
         "files.exclude": {
