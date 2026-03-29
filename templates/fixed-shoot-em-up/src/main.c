@@ -1,31 +1,8 @@
 #include "./z88dk_headers.h"
 #include "infrastructure/isr.h"
-#include "data/tiles.h"
 #include <string.h>
 
 const struct sp1_Rect game_area = {0, 0, 32, 24};
-
-uint8_t temp[] = {
-    0b11111111,
-    0b11111111,
-    0b11001111,
-    0b11001111,
-    0b11001111,
-    0b11001111,
-    0b11111111,
-    0b11111111,
-};
-
-uint8_t temp2[] = {
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-};
 
 /** Main app entry point */
 int main(void)
