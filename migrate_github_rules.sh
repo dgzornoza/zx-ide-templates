@@ -1,3 +1,18 @@
+#!/bin/bash
+set -e
+
+mkdir -p /workspaces/zx-ide-templates/.github/instructions
+mkdir -p /workspaces/zx-ide-templates/.github/skills/create-entity
+
+# Move instructions and skills
+mv /workspaces/zx-ide-templates/templates/fixed-shoot-em-up/.github/instructions/* /workspaces/zx-ide-templates/.github/instructions/ || true
+mv /workspaces/zx-ide-templates/templates/fixed-shoot-em-up/.github/skills/create-entity/SKILL.md /workspaces/zx-ide-templates/.github/skills/create-entity/SKILL.md || true
+
+# Remove old .github folder in the template
+rm -rf /workspaces/zx-ide-templates/templates/fixed-shoot-em-up/.github
+
+# Write the new merged copilot-instructions.md
+cat << 'INNER_EOF' > /workspaces/zx-ide-templates/.github/copilot-instructions.md
 # AI Coding Instructions for zx-ide-templates
 
 ## Project Overview
@@ -14,10 +29,6 @@ This workspace contains **ZX Spectrum game development templates** using the z88
 
 - **English Only**: ALL variables, function/method names, and code comments MUST ALWAYS be written in English.
 
-## Maintenance Rule
-
-- Any change to instructions, skills, or prompts MUST be reflected in this file (`.github/copilot-instructions.md`) to keep the guidance index synchronized.
-
 ## Global Z88DK/Z80 & SP1 Rules (Instructions)
 
 The following guidelines dictate the architecture of the game. They are loaded automatically by Copilot when relevant:
@@ -28,9 +39,6 @@ The following guidelines dictate the architecture of the game. They are loaded a
 ## Agent Skills
 
 - **`/create-entity`**: Use the **[Game Entity Creation Skill](./skills/create-entity/SKILL.md)** whenever you need to create a new game element (e.g., player, enemy, item, layout). It provides a strict workflow to enforce the zero-parameter and zero-allocation hardware rules.
-- **`/z88dk-c-coding-conventions`**: Use the **[Z88DK C Coding Conventions Skill](./skills/z88dk-c-coding-conventions/SKILL.md)** whenever writing, reviewing, or refactoring C code to ensure adherence to 8-bit performance guidelines, strict block syntax, and naming conventions.
-- **`/z88dk-sp1-codegen`**: Use the **[SP1 Code Generation Skill](./skills/z88dk-sp1-codegen/SKILL.md)** whenever you need implementation templates for SP1 initialization, sprites, rendering loops, or performance-oriented SP1 patterns.
-- **`/z88dk-im2-setup`**: Use the **[IM2 Setup Skill](./skills/z88dk-im2-setup/SKILL.md)** whenever you need to implement or refactor IM2 setup, either with SP1 (`0xD0`/`0xD1` layout) or without SP1 (general z88dk aligned-page layout).
 
 ---
 
@@ -81,4 +89,44 @@ Or use the VS Code **Build** task (default build task).
 
 > `REGISTER_SP = 0xd000` is why IM2 uses `0xD0`/`0xD1` for the vector table and jump point — the SP1 engine relocates the stack there, making that region safe and unused.
 
+#### IM2 Interrupt Pattern (SP1 layout)
+
+IM2 uses `0xD0` and `0xD1` because SP1 relocates the stack to `0xD000`, making `0xD000–0xD1FF` a safe, unused region.
+
+```c
+// infrastructure/isr.c
+#define TABLE_HIGH_BYTE      ((unsigned int)0xD0)
+#define JUMP_POINT_HIGH_BYTE ((unsigned int)0xD1)
+#define TABLE_ADDR  ((void *)(TABLE_HIGH_BYTE * 256u))
+#define JUMP_POINT  ((unsigned char *)((unsigned int)(JUMP_POINT_HIGH_BYTE * 256u) + JUMP_POINT_HIGH_BYTE))
+
+IM2_DEFINE_ISR(isr) { /* 50 Hz game tick logic here */ }
+
+void im2_setup(void) {
+    memset(TABLE_ADDR, JUMP_POINT_HIGH_BYTE, 257);
+    z80_bpoke(JUMP_POINT, 195);
+    z80_wpoke(JUMP_POINT + 1, (unsigned int)isr);
+    im2_init(TABLE_ADDR);
+    intrinsic_ei();
+}
+```
+
+`main.c` only calls `im2_setup()` — never contains IM2 implementation details.
+
+#### SP1 Initialization Pattern
+
+```c
+struct sp1_Rect full_screen = {0, 0, 32, 24};
+sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL | SP1_IFLAG_OVERWRITE_TILES | SP1_IFLAG_OVERWRITE_DFILE,
+               INK_WHITE | PAPER_BLACK, ' ');
+sp1_Invalidate(&full_screen);
+
+while (1) {
+    sp1_UpdateNow();
+}
+```
+
 ---
+INNER_EOF
+
+echo "Migration complete!"

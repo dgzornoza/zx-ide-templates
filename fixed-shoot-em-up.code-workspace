@@ -1,6 +1,10 @@
 {
     "folders": [
 	    {
+            "name": ".github",
+            "path": ".github"
+        },
+		{
             "name": "docs",
             "path": "docs"
         },
@@ -8,6 +12,7 @@
             "name": "fixed-shoot-em-up",
             "path": "templates/fixed-shoot-em-up"
         },
+
     ],
     "settings": {		
         "eslint.workingDirectories": [
