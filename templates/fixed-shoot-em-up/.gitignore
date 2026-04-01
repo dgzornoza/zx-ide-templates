@@ -14,7 +14,6 @@
 *.sym
 *.o
 *.opt
-*.asm
 *.lst
 *.rel
 *.tmp
