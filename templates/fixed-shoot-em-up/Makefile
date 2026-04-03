@@ -1,5 +1,5 @@
 # Name of final file (without the extension)
-EXEC_OUTPUT=fixed-shooter-up
+EXEC_OUTPUT=fixed-shoot-em-up
 
 # -----------------------------------------------
 # variables for compiler, clib and crt selection

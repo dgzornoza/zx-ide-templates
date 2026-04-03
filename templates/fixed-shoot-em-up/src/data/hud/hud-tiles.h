@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-extern const uint8_t hud_tiles_tiles[];
-extern const uint8_t hud_tiles_tiles_attributes[];
+extern const uint8_t hud_tiles[];
+extern const uint8_t hud_tiles_attr[];
 
 #endif // __HUD_TILES_H__

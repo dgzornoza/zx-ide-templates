@@ -36,7 +36,7 @@
             ],
             "startAutomatically": true,
             "rootFolder": "${workspaceFolder}",
-            "load": "./bin/fixed-shooter-up.sna",
+            "load": "./bin/fixed-shoot-em-up.sna",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
         },
@@ -71,7 +71,7 @@
             ],
             "startAutomatically": true,
             "rootFolder": "${workspaceFolder}",
-            "load": "./bin/fixed-shooter-up.sna",
+            "load": "./bin/fixed-shoot-em-up.sna",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
         },
@@ -105,7 +105,7 @@
             ],
             "startAutomatically": true,
             "rootFolder": "${workspaceFolder}",
-            "load": "./bin/fixed-shooter-up.sna",
+            "load": "./bin/fixed-shoot-em-up.sna",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
         }

@@ -5,7 +5,7 @@
 #include "../state/game_state.h"
 
 // Panel position configuration on the 32x24 character grid
-#define HUD_X_OFFSET 8
+#define HUD_X_OFFSET 0
 #define HUD_Y_OFFSET 0
 
 static void hud_init(void)
@@ -14,15 +14,15 @@ static void hud_init(void)
     // From 'hud.asm' the map uses indices (tiles) from 1 to 64
     // hud_tiles_tiles has 8 bytes (8x8 pixels) per tile pattern.
 
-    // Index 0 is usually skipped assuming empty (loaded by sp1_Initialize in main.c)
+    // Note: Since the HUD is static and loaded first, it doesn’t need to update, the tiles can be loaded at any index,
+    // and then those indices can be used by any other part of the program.
+    // It isn’t necessary to reserve a dedicated block of indices exclusively for the HUD.
+
+    // Index 0 is usually skipped assuming empty
     for (uint16_t i = 1; i <= 64; i++)
     {
-        // In SP1, load the array + its offset assuming 8 bytes per graphic:
-        // Note: (i - 1) * 8 because tiles typically map from byte 0.
-        // If the exporter generated a blank tile as tile 0, this may vary,
-        // but mapping i*8 or (i-1)*8 depends on the exported data.
-        // We will assume the map starts directly at the pointer offset.
-        sp1_TileEntry(i, hud_tiles_tiles + (i * 8));
+        // Tile index starts at 1 in the map, while tile data starts at byte 0.
+        sp1_TileEntry(i, hud_tiles + ((i - 1U) * 8U));
     }
 }
 
@@ -43,9 +43,8 @@ void hud_draw(void)
             // Assign tile 0 (empty) for zeros, or the default color (e.g., INK_WHITE)
             if (tile_index > 0)
             {
-                // We would read the color attribute from 'hud_tiles_tiles_attributes' if color were fixed per tile,
-                // but for simplicity we draw with a global default color
-                sp1_PrintAt(HUD_Y_OFFSET + y, HUD_X_OFFSET + x, INK_WHITE | PAPER_BLACK, tile_index);
+                uint8_t tile_attribute = hud_tiles_attributes[tile_index - 1U];
+                sp1_PrintAt(HUD_Y_OFFSET + y, HUD_X_OFFSET + x, tile_attribute, tile_index);
             }
         }
     }

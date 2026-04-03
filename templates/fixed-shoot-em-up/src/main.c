@@ -13,6 +13,10 @@ int main(void)
 {
     im2_setup();
 
+    // limpiar pantalla
+    zx_border(PAPER_BLACK);
+    zx_cls(PAPER_BLACK);
+
     // Initialize SP1 engine with rotation tables and clear settings
     sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL | SP1_IFLAG_OVERWRITE_TILES | SP1_IFLAG_OVERWRITE_DFILE, INK_BLACK | PAPER_BLACK, ' ');
 
@@ -24,8 +28,8 @@ int main(void)
 
     // Initialize visual components
     hud_draw();
-    score_init();
-    score_draw();
+    // score_init();
+    // score_draw();
 
     // main app loop
     while (1)
