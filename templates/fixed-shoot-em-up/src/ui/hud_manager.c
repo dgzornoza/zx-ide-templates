@@ -3,49 +3,71 @@
 #include "../data/hud/hud.h"
 #include "../data/hud/hud-tiles.h"
 #include "../state/game_state.h"
+#include "../infrastructure/definitions.h"
+#include "../core/utils/invert_horizontal_screen_tile.h"
 
-// Panel position configuration on the 32x24 character grid
+// hud position
 #define HUD_X_OFFSET 0
 #define HUD_Y_OFFSET 0
 
-static void hud_init(void)
-{
-    // 1. Load tile bitmaps (binary data) into SP1 graphics memory.
-    // From 'hud.asm' the map uses indices (tiles) from 1 to 64
-    // hud_tiles_tiles has 8 bytes (8x8 pixels) per tile pattern.
-
-    // Note: Since the HUD is static and loaded first, it doesn’t need to update, the tiles can be loaded at any index,
-    // and then those indices can be used by any other part of the program.
-    // It isn’t necessary to reserve a dedicated block of indices exclusively for the HUD.
-
-    // Index 0 is usually skipped assuming empty
-    for (uint16_t i = 1; i <= 64; i++)
-    {
-        // Tile index starts at 1 in the map, while tile data starts at byte 0.
-        sp1_TileEntry(i, hud_tiles + ((i - 1U) * 8U));
-    }
-}
+/**
+ *  Private function to invert the right screen HUD tiles after drawing the original tiles in the left screen
+ */
+static void invert_right_screen_hud(void);
 
 void hud_draw(void)
 {
-    // Initialize the HUD graphics in SP1 first
-    hud_init();
-
-    // 2. Draw the static panel grid that does not change (16 columns x 4 rows)
-    // Reading indices directly from our exported hud[4][16] array
-
     for (uint8_t y = 0; y < HUD_HEIGHT; y++)
     {
         for (uint8_t x = 0; x < HUD_WIDTH; x++)
         {
+            // tile index in hud.asm (is index from hud-tiles.asm)
             uint8_t tile_index = hud[y][x];
 
-            // Assign tile 0 (empty) for zeros, or the default color (e.g., INK_WHITE)
+            // tile 0 is reserved for empty tile, so we only draw if tile_index > 0
             if (tile_index > 0)
             {
-                uint8_t tile_attribute = hud_tiles_attributes[tile_index - 1U];
+                // offset used in hud-tiles.asm (tile_index - 1 because tile_index starts from 1, but array index starts from 0)
+                uint8_t offset = tile_index - 1U;
+                uint8_t tile_attribute = hud_tiles_attributes[offset];
+
+                // register tiles
+                const uint8_t *hud_tile = hud_tiles + (offset * CHAR_SIZE);
+                sp1_TileEntry(tile_index, hud_tile);
+
+                // draw original tile
                 sp1_PrintAt(HUD_Y_OFFSET + y, HUD_X_OFFSET + x, tile_attribute, tile_index);
+                // draw copy tile in right screen for mirroring tiles, not set attribute to avoid show before of mirroring tile
+                sp1_PrintAt(HUD_Y_OFFSET + y, HUD_X_OFFSET + HUD_WIDTH + x, 1, tile_index);
             }
+        }
+    }
+
+    // update SP1 for draw all tiles before mirroring tiles in right screen
+    sp1_UpdateNow();
+
+    invert_right_screen_hud();
+}
+
+uint8_t *address;
+uint8_t y;
+uint8_t x;
+static void invert_right_screen_hud(void)
+{
+    // mirror tiles in right screen
+    for (y = 0; y < HUD_HEIGHT; y++)
+    {
+        for (x = HUD_WIDTH; x < SCREEN_CHARS_WIDTH; x++)
+        {
+            address = zx_cxy2aaddr(x, y);
+
+            // invert_horizontal_screen_tile(address);
+
+            *address = 0xFF; // fila completa de píxeles encendidos
+            // for (uint8_t i = 0; i < 8; i++)
+            // {
+            //     address[i] = 0xFF; // fila completa de píxeles encendidos
+            // }
         }
     }
 }

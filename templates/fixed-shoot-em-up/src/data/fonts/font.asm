@@ -1,4 +1,5 @@
-// Read-Only Data Section for User Module
+; Data Size: 512 bytes
+; Read-Only Data Section for User Module
 SECTION rodata_user
 
 PUBLIC _font_tiles

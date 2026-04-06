@@ -1,3 +1,7 @@
+; HUD_WIDTH: 16
+; HUD_HEIGHT: 4
+; HUD_SIZE: 64
+; HUD_TILES_COUNT: 52
 ; Data Size: 64 bytes
 SECTION rodata_user
 PUBLIC _hud

@@ -41,7 +41,7 @@ int main(void)
             intrinsic_halt();
         }
 
-        score_draw();
+        // score_draw();
 
         // actualizar sp1
         sp1_UpdateNow();
