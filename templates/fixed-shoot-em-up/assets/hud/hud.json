@@ -4,7 +4,7 @@
     "image": "hud-tiles.png",
     "tileWidth": 8,
     "tileHeight": 8,
-    "tileCount": 64,
+    "tileCount": 52,
     "columns": 16
   },
   "layers": [
