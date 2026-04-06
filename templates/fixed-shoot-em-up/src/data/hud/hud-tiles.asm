@@ -1,9 +1,9 @@
-// Total data bytes: 468
-// Read-Only Data Section for User Module
+; Data Size: 468 bytes
+; Read-Only Data Section for User Module
 SECTION rodata_user
 
-PUBLIC _hud_tiles
-_hud_tiles:
+PUBLIC _hud_tiles_tiles
+_hud_tiles_tiles:
 
     defb $00,$00,$00,$FF,$FF,$01,$00,$00
 
@@ -109,8 +109,8 @@ _hud_tiles:
 
     defb $FF,$00,$00,$FF,$C7,$C7,$47,$00
 
-PUBLIC _hud_tiles_attr
-_hud_tiles_attr:
+PUBLIC _hud_tiles_tiles_attributes
+_hud_tiles_tiles_attributes:
     defb $01,$01,$01,$01,$01,$01,$01,$01
     defb $01,$01,$01,$01,$06,$06,$06,$06
     defb $01,$01,$05,$01,$01,$02,$01,$06

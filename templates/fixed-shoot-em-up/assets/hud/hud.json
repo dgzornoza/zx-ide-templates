@@ -1,6 +1,7 @@
 {
+  "exporterVersion": "1.0.0",
   "tileset": {
-    "image": "D:/OpenSource/zx-ide-templates/templates/fixed-shoot-em-up/assets/hud/hud-tiles.png",
+    "image": "hud-tiles.png",
     "tileWidth": 8,
     "tileHeight": 8,
     "tileCount": 64,
