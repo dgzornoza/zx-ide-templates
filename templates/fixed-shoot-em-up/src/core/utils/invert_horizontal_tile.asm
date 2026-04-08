@@ -1,33 +1,49 @@
 ;-------------------------------------------------------------------------------
-; invert_horizontal_screen_char.asm
-; Optimized function to invert a ZX Spectrum 8x8 screen character horizontally in-place using a lookup table.
+; invert_horizontal_tile.asm
+; Optimized function to invert a ZX Spectrum 8x8 tile horizontally using a lookup table.
 ;
-; Function: void __z88dk_fastcall _invert_horizontal_screen_char(void *address)
+; Function: extern void invert_horizontal_tile_struct(TileMirrorArgs *args) __z88dk_fastcall;
 ; Arguments:
-;   HL = pointer to screen character (8 bytes, one per row), should point to the first scanline of the character
+;   HL = pointer to structure TileMirrorArgs (HL = &args)
+;   HL+0,1 = pointer to source tile data (8 bytes, one per row)
+;   HL+2,3 = pointer to destination tile data (8 bytes, one per row)
 ; Description:
-;   For each row of the character, replaces the byte with its horizontally mirrored value
+;   For each row of the tile, replaces the byte with its horizontally mirrored value
 ;   using a precomputed mirror table. The operation is performed in-place.
 ; Clobbers: AF, BC, DE, HL
 ; Returns: None
 ;-------------------------------------------------------------------------------
 SECTION code_user
 
-PUBLIC _invert_horizontal_screen_char
+PUBLIC _invert_horizontal_tile
+_invert_horizontal_tile:
+    ; 1. Extraer punteros de la estructura
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    inc hl          ; DE = source pointer
 
-_invert_horizontal_screen_char:
-    ld d, _mirror_table >> 8      ; D = high byte of mirror table (table must be aligned) (ei: $68 if is $6800)
-    ld b, 8                       ; B = 8 scanlines/rows to process
-.loop:
-    ld a, (hl)                    ; Load original byte (row)
-    ld e, a                       ; Use as low byte for table pointer (DE = mirror_table + value)
-    ld a, (de)                    ; Load mirrored value from table
+    ld c, (hl)
+    inc hl
+    ld b, (hl)      ; BC = dest pointer
 
-    ld (hl), a                    ; Store mirrored value back to character
-    inc h                         ; Jump to next line of the character
-                                  ; In the Spectrum, adding 1 to H jumps to the next
-                                  ; scanline of the same character position.
-    djnz loop                     ; Repeat for all 8 scanlines/rows
+    ; Ahora tenemos: DE = origen, BC = destino
+    ; Pero necesitamos D para la tabla, así que intercambiamos
+    push bc         ; Guardamos destino en stack un momento
+    ex de, hl       ; HL = source pointer
+
+    ld d, _mirror_table >> 8
+    pop bc          ; BC = dest pointer
+
+    ; 2. Bucle desenrollado (Unrolled) para máximo rendimiento
+    ; Repetimos el bloque 8 veces (una por cada fila del tile)
+    REPT 8
+        ld e, (hl)  ; E = byte original
+        ld a, (de)  ; A = byte espejado (desde mirror_table)
+        ld (bc), a  ; Guardar en destino
+        inc hl      ; Siguiente fila origen
+        inc bc      ; Siguiente fila destino
+    ENDR
 
     ret
 
