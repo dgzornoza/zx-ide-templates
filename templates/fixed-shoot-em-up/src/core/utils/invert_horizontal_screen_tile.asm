@@ -1,39 +1,41 @@
 ;-------------------------------------------------------------------------------
-; invert_horizontal_screen_tile.asm
-; Inverts a ZX Spectrum 8x8 screen tile horizontally in-place using a lookup table.
+; invert_horizontal_screen_char.asm
+; Optimized function to invert a ZX Spectrum 8x8 screen character horizontally in-place using a lookup table.
 ;
-; Function: void __z88dk_fastcall _invert_horizontal_screen_tile(void *address)
+; Function: void __z88dk_fastcall _invert_horizontal_screen_char(void *address)
 ; Arguments:
-;   HL = pointer to screen tile (8 bytes, one per row)
+;   HL = pointer to screen character (8 bytes, one per row), should point to the first scanline of the character
 ; Description:
-;   For each row of the tile, replaces the byte with its horizontally mirrored value
+;   For each row of the character, replaces the byte with its horizontally mirrored value
 ;   using a precomputed mirror table. The operation is performed in-place.
 ; Clobbers: AF, BC, DE, HL
 ; Returns: None
 ;-------------------------------------------------------------------------------
 SECTION code_user
 
-PUBLIC _invert_horizontal_screen_tile
+PUBLIC _invert_horizontal_screen_char
 
-_invert_horizontal_screen_tile:
-    ld d, _mirror_table >> 8      ; D = high byte of mirror table (table must be aligned)
-    ld b, 8                       ; B = 8 rows to process
-
+_invert_horizontal_screen_char:
+    ld d, _mirror_table >> 8      ; D = high byte of mirror table (table must be aligned) (ei: $68 if is $6800)
+    ld b, 8                       ; B = 8 scanlines/rows to process
 .loop:
     ld a, (hl)                    ; Load original byte (row)
     ld e, a                       ; Use as low byte for table pointer (DE = mirror_table + value)
     ld a, (de)                    ; Load mirrored value from table
-    ld (hl), a                    ; Store mirrored value back to tile
-    inc h                         ; Jump to next line of the tile
+
+    ld (hl), a                    ; Store mirrored value back to character
+    inc h                         ; Jump to next line of the character
                                   ; In the Spectrum, adding 1 to H jumps to the next
                                   ; scanline of the same character position.
-    djnz loop                     ; Repeat for all 8 rows
+    djnz loop                     ; Repeat for all 8 scanlines/rows
 
     ret
 
 
-SECTION rodata_user
-ALIGN 256             ; It is vital that the table is aligned to 256 bytes
+; Table of mirrored byte values for all 256 possible byte inputs (0-255). Each entry is the horizontal mirror of the index.
+; The table is aligned to 256 bytes to allow for efficient indexing using the input byte as the low byte of the address.
+SECTION bss_user
+ALIGN 256             ; It is vital that the table is aligned to 256 bytes for use optimized inversion function.
 _mirror_table:
     defb $00,$80,$40,$C0,$20,$A0,$60,$E0,$10,$90,$50,$D0,$30,$B0,$70,$F0
     defb $08,$88,$48,$C8,$28,$A8,$68,$E8,$18,$98,$58,$D8,$38,$B8,$78,$F8

@@ -10,8 +10,5 @@
     "C_Cpp.default.includePath": [
         "/opt/z88dk/include/_DEVELOPMENT/common"
     ],
-    "files.associations": {
-        "spectrum.h": "c"
-    },
     "zxide.z88dk.useAsmDebug": false
 }

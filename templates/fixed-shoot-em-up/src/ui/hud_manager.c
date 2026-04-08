@@ -10,11 +10,6 @@
 #define HUD_X_OFFSET 0
 #define HUD_Y_OFFSET 0
 
-/**
- *  Private function to invert the right screen HUD tiles after drawing the original tiles in the left screen
- */
-static void invert_right_screen_hud(void);
-
 void hud_draw(void)
 {
     for (uint8_t y = 0; y < HUD_HEIGHT; y++)
@@ -36,38 +31,16 @@ void hud_draw(void)
                 sp1_TileEntry(tile_index, hud_tile);
 
                 // draw original tile
-                sp1_PrintAt(HUD_Y_OFFSET + y, HUD_X_OFFSET + x, tile_attribute, tile_index);
-                // draw copy tile in right screen for mirroring tiles, not set attribute to avoid show before of mirroring tile
-                sp1_PrintAt(HUD_Y_OFFSET + y, HUD_X_OFFSET + HUD_WIDTH + x, 1, tile_index);
+                sp1_PrintAtInv(HUD_Y_OFFSET + y, HUD_X_OFFSET + x, tile_attribute, tile_index);
+                // draw copy tile in right screen for mirroring tiles (inverted from left screen),
+                // Note: use SCREEN_CHARS_WIDTH_BASE_0 because is from 0 to 31 (32 chars per row)
+                uint8_t mirrored_x = SCREEN_CHARS_WIDTH_BASE_0 - HUD_X_OFFSET - x;
+                sp1_PrintAtInv(HUD_Y_OFFSET + y, mirrored_x, tile_attribute, tile_index);
+
+                sp1_UpdateNow();
+                void *address = zx_cxy2saddr(mirrored_x, HUD_Y_OFFSET + y);
+                invert_horizontal_screen_char(address);
             }
-        }
-    }
-
-    // update SP1 for draw all tiles before mirroring tiles in right screen
-    sp1_UpdateNow();
-
-    invert_right_screen_hud();
-}
-
-uint8_t *address;
-uint8_t y;
-uint8_t x;
-static void invert_right_screen_hud(void)
-{
-    // mirror tiles in right screen
-    for (y = 0; y < HUD_HEIGHT; y++)
-    {
-        for (x = HUD_WIDTH; x < SCREEN_CHARS_WIDTH; x++)
-        {
-            address = zx_cxy2aaddr(x, y);
-
-            // invert_horizontal_screen_tile(address);
-
-            *address = 0xFF; // fila completa de píxeles encendidos
-            // for (uint8_t i = 0; i < 8; i++)
-            // {
-            //     address[i] = 0xFF; // fila completa de píxeles encendidos
-            // }
         }
     }
 }

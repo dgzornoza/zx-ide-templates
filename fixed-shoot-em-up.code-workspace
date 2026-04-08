@@ -15,6 +15,7 @@
 
     ],
     "settings": {		
+		"zxide.z88dk.useAsmDebug": false,
         "eslint.workingDirectories": [
             {
                 "directory": "fixed-shoot-em-up"
