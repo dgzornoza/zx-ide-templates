@@ -1,5 +1,5 @@
 #include "./z88dk_headers.h"
-#include "infrastructure/isr.h"
+#include "core/infrastructure/isr.h"
 #include "state/game_state.h"
 #include "ui/hud_manager.h"
 #include "ui/score_manager.h"
@@ -27,7 +27,7 @@ int main(void)
     game_state_init();
 
     // Initialize visual components
-    hud_draw();
+    draw_hud();
     // score_init();
     // score_draw();
 
