@@ -3,7 +3,7 @@
 #include "../data/hud/hud.h"
 #include "../data/hud/hud-tiles.h"
 #include "../state/game_state.h"
-#include "../infrastructure/definitions.h"
+#include "../core/infrastructure/definitions.h"
 #include "../core/utils/invert_horizontal_screen_tile.h"
 
 // hud position
