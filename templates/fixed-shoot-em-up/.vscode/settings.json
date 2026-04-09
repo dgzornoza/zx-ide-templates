@@ -5,7 +5,7 @@
         ".tmp": true,
         "obj": true,
         "src/**/*.lis": true,
-        "bin": true
+        "bin": false
     },
     "C_Cpp.default.includePath": [
         "/opt/z88dk/include/_DEVELOPMENT/common"
