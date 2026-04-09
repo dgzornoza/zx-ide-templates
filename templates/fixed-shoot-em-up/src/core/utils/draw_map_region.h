@@ -1,5 +1,5 @@
-#ifndef __CORE_UTILS_DRAW_TILED_DATA_H__
-#define __CORE_UTILS_DRAW_TILED_DATA_H__
+#ifndef __CORE_UTILS_DRAW_MAP_REGION_H__
+#define __CORE_UTILS_DRAW_MAP_REGION_H__
 
 #include <stdint.h>
 
@@ -26,19 +26,15 @@ typedef struct
     uint8_t map_y_offset;
     // If non-zero, draws a horizontally mirrored copy of the map on the opposite side of the screen, inverting the tile graphics.
     uint8_t has_mirror;
-} DrawTiledConfig;
-
-extern DrawTiledConfig draw_tiled_config;
+} DrawTiledParams;
 
 /**
  * Draws a Tiled-exported tile map using SP1 tile data and attributes.
  *
- * It reads all its configuration from the global `draw_tiled_config`
- * variable. Ensure all fields are set before calling.
+ * It reads all its configuration from the provided `params` structure.
+ * Ensure all fields are set before calling.
  *
- * @remark Only use this function for static maps that don't change often,
- * since this implementacion is optimized for simplicity and memory usage, not for performance.
  */
-void draw_tiled_data(void) __z88dk_fastcall;
+void draw_map_region(DrawTiledParams *params) __z88dk_fastcall;
 
-#endif // __CORE_UTILS_DRAW_TILED_DATA_H__
+#endif // __CORE_UTILS_DRAW_MAP_REGION_H__
