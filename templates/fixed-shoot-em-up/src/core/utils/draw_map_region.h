@@ -3,53 +3,69 @@
 
 #include <stdint.h>
 
-/* Campos comunes:
-   - tiles_map: puntero al mapa
-   - tiles_data: gráficos
-   - tiles_attributes: atributos
-   - map_width/map_height: tamaño
-   - map_x_offset/map_y_offset: desplazamiento
-*/
-#define COMMON_FIELDS                \
-    const uint8_t *tiles_map;        \
-    const uint8_t *tiles_data;       \
-    const uint8_t *tiles_attributes; \
-    uint8_t map_width;               \
-    uint8_t map_height;              \
-    uint8_t map_x_offset;            \
+/**
+ * Configuration structure for drawing a tiled map region.
+ * Set the fields in draw_map_config before calling any draw_map_* function.
+ */
+typedef struct
+{
+    /** Pointer to the tile index map exported from Tiled (row-major, 1-based indices; 0 = empty). */
+    const uint8_t *tiles_map;
+    /** Pointer to the raw tile bitmap data (8 bytes per tile, tightly packed). */
+    const uint8_t *tiles_data;
+    /** Pointer to the SP1 colour-attribute array, one byte per tile (same order as tiles_data). */
+    const uint8_t *tiles_attributes;
+    /** Width of the map region in tiles. */
+    uint8_t map_width;
+    /** Height of the map region in tiles. */
+    uint8_t map_height;
+    /** Screen column (in characters) where the left edge of the map is drawn. */
+    uint8_t map_x_offset;
+    /** Screen row (in characters) where the top edge of the map is drawn. */
     uint8_t map_y_offset;
+    /**
+     * Base SP1 tile-slot index used by draw_map_region() to register each tile via sp1_TileEntry.
+     * The effective slot for tile N is (sp1_start_tile_entry_index + N).
+     * Use distinct ranges for different maps to avoid slot collisions.
+     * NOTE: only used by draw_map_region(). draw_map_static_region() and
+     * draw_map_static_region_mirrored() always use the volatile slot 255 and ignore this field.
+     */
+    uint8_t sp1_start_tile_entry_index;
+} DrawMapRegionConfig;
 
 /**
- * Configuration structure for drawing a tiled map.
+ * Global configuration used by all draw_map_* functions.
+ * Populate this struct before calling any draw_map_* function.
  */
-typedef struct
-{
-    COMMON_FIELDS
-} DrawMapRegionParams;
-
-typedef struct
-{
-    COMMON_FIELDS
-    // If non-zero, draws a horizontally mirrored copy of the map on specified position, inverting the tile graphics.
-    uint8_t has_mirror;
-} DrawMapStaticRegionParams;
+extern DrawMapRegionConfig draw_map_config;
 
 /**
- * Draws a Tiled-exported tile map using SP1 tile data and attributes as static, with support for mirrored drawing.
- * This function uses a single Tile ID (255) as a "volatile" slot for static or mirrored tiles.
- * Note: Forcing an immediate tile update. If the tile is redrawn or a sprite passes over it, the tile will contain garbage or the current tile at position 255.
- * It should be used ONLY for regions that do not change, such as a HUD or walls that will not be modified and where nothing will overlap that tile.
+ * Draws a static map region using SP1 tile data and attributes.
+ * Uses a single Tile ID (255) as a "volatile" slot for immediate rendering.
+ * Note: If the tile is redrawn or a sprite passes over it, the tile will contain garbage.
+ * Use ONLY for regions that do not change and where nothing will overlap.
+ *
+ * Note: Set the fields in draw_map_config before calling this function
  */
-extern void draw_map_static_region(DrawMapStaticRegionParams *params) __z88dk_fastcall;
+extern void draw_map_static_region(void);
 
 /**
- * Draws a Tiled-exported tile map using SP1 tile data and attributes.
- * This function draws a region of the screen using the data from a tile map.
- * The tiles will be stored at the index specified by the tile_index property, so if the function is invoked again with the same indices,
- * they will be overwritten. Therefore, during an invalidation, the last tile assigned to that index will be the one that gets set.
- * Because of this, the game map indices must be managed carefully to avoid overwriting them.
- * @param params Configuration parameters for drawing the map region.
+ * Draws a horizontally mirrored static map region using SP1 tile data and attributes.
+ * Uses a single Tile ID (255) as a "volatile" slot, inverting each tile's graphics.
+ * Note: If the tile is redrawn or a sprite passes over it, the tile will contain garbage.
+ * Use ONLY for regions that do not change and where nothing will overlap.
+ *
+ * @remarks Set the fields in draw_map_config before calling any draw_map_* function.
  */
-extern void draw_map_region(DrawMapRegionParams *params) __z88dk_fastcall;
+extern void draw_map_static_region_mirrored(void);
+
+/**
+ * Draws a Tiled-exported tile map region using SP1 tile data and attributes.
+ * Tiles are stored at their tile_index slot. Calling again with the same indices overwrites them.
+ * Manage game map tile indices carefully to avoid unintended overwrites.
+ *
+ * Note: Set the fields in draw_map_config before calling this function
+ */
+extern void draw_map_region(void);
 
 #endif // __CORE_UTILS_DRAW_MAP_REGION_H__

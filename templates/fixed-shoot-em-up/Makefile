@@ -112,5 +112,6 @@ clean_all:
 	@echo "Cleaning workspace ..."
 	rm -rf $(OUT_DIR) /tmp/tmpXX*
 	rm -rf $(OBJ_DIR)
+	find src -name "*.lis" -delete
 	@echo "Total clean completed"
 

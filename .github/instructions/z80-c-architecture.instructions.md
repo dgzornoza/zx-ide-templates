@@ -65,7 +65,35 @@ When writing C code for the Z80 (ZX Spectrum) processor, follow these strict arc
   }
   ```
 
-## 6. IM2 Interrupt Pattern (General Z88DK)
+## 6. Local Variables vs. Global Struct Access in SDCC
+
+**SDCC does not perform register allocation** for local variables in functions with complex inner loops. All locals are spilled to a stack frame as `(ix-N)` offsets. This has a direct cost difference on Z80:
+
+| Access pattern | SDCC output             | Bytes | T-states |
+| -------------- | ----------------------- | ----- | -------- |
+| Local variable | `ld a,(ix-N)`           | 3     | **19**   |
+| Direct global  | `ld a,(_global+offset)` | 3     | **13**   |
+
+**Rule: for any field that is read but never modified during the loop, access the global struct directly. Only keep a local variable when the value is mutated in the loop body.**
+
+```c
+// BAD — tiles_data copied to local: every access costs (ix-N) = 19 T-states
+const uint8_t *tiles_data = draw_map_config.tiles_data;
+for (...) {
+    const uint8_t *tile_data = tiles_data + (tile_index * 8);
+}
+
+// GOOD — read directly from global = 13 T-states per access
+for (...) {
+    const uint8_t *tile_data = draw_map_config.tiles_data + (tile_index * 8);
+}
+```
+
+**When a local IS required:** keep it local only when the variable is mutated during iteration (e.g., a running pointer `tiles_map += map_width` or a loop counter).
+
+> Always verify with the generated `.lis` file. Look for `ld hl,-N / add hl,sp / ld sp,hl` at the function entry — that is the stack frame allocation. If a field you expected to be in a register appears as `ld a,(ix-N)` inside the inner loop, move it back to a direct global access.
+
+## 7. IM2 Interrupt Pattern (General Z88DK)
 
 When creating interrupts without SP1, set up the IM2 vector table in a safe, aligned 256-byte page that does not overlap stack, heap, asset buffers, or library-reserved memory.
 
