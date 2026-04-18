@@ -1,11 +1,12 @@
 #include "score_manager.h"
 #include "../z88dk_headers.h"
-#include "../data/fonts/font.h"
+#include "tile_registry.h"
+#include "../data/fonts/numbers.h"
 #include "../state/game_state.h"
 
 // Position and format configuration
-#define SCORE_X_POS 18
-#define SCORE_Y_POS 0
+#define SCORE_X_POS 21
+#define SCORE_Y_POS 2
 #define SCORE_NUM_DIGITS 6
 
 // Internal memory for tracking changes
@@ -17,14 +18,14 @@ void score_init(void)
     // Mapping digits 0-9 linearly starting from ASCII '0' -> ('0'+0, '0'+1...)
     for (uint8_t i = 0; i < 10; i++)
     {
-        sp1_TileEntry('0' + i, (uint8_t *)font_tiles + (i * 8));
+        sp1_TileEntry(TILE_FONT_NUMBERS_BASE + i, (uint8_t *)numbers + (i * 8));
     }
 }
 
 void score_draw(void)
 {
-    // Check if the global state machine differs from what is on screen
-    if (game_score != last_drawn_score)
+    // Check if is playing and the score is different from the last drawn score to avoid unnecessary redraws
+    if (game_state == STATE_PLAYING && game_score != last_drawn_score)
     {
         uint16_t temp_score = game_score;
 
@@ -33,7 +34,7 @@ void score_draw(void)
         {
             uint8_t digit = temp_score % 10;
             temp_score /= 10;
-            sp1_PrintAt(SCORE_Y_POS, SCORE_X_POS + i, INK_WHITE | PAPER_BLACK, '0' + digit);
+            sp1_PrintAtInv(SCORE_Y_POS, SCORE_X_POS + i, INK_WHITE | PAPER_BLACK, TILE_FONT_NUMBERS_BASE + digit);
         }
 
         last_drawn_score = game_score;

@@ -28,8 +28,7 @@ int main(void)
 
     // Initialize visual components
     draw_hud();
-    // score_init();
-    // score_draw();
+    score_init();
 
     // main app loop
     while (1)
@@ -41,9 +40,10 @@ int main(void)
             intrinsic_halt();
         }
 
-        // score_draw();
+        // update game state (movement, collisions, etc.)
+        score_draw();
 
-        // actualizar sp1
+        // update sp1 scene
         sp1_UpdateNow();
     }
 }
