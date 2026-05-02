@@ -1,6 +1,6 @@
 #include "hud_manager.h"
 #include "../z88dk_headers.h"
-#include "../data/hud/hud.h"
+#include "../data/hud/hud-map.h"
 #include "../data/hud/hud-tiles.h"
 #include "../core/utils/draw_map_region.h"
 #include "../core/definitions.h"

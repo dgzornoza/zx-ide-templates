@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="16" height="4" tilewidth="8" tileheight="8" infinite="0" nextlayerid="2" nextobjectid="1">
  <editorsettings>
-  <export target="hud.json" format="zx-ide-map-tiled"/>
+  <export target="hud-map.json" format="zx-ide-map-tiled"/>
  </editorsettings>
  <tileset firstgid="1" name="hud-tiles" tilewidth="8" tileheight="8" tilecount="64" columns="16">
   <image source="hud-tiles.png" width="128" height="32"/>
