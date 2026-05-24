@@ -34,6 +34,12 @@ Genera código C y ASM para la librería gráfica **SP1 v3** de z88dk, compiland
 6. **Attribute clash** — diseñar sprites en monocromo o con máscara; los colores se gestionan por celda 8×8.
 7. **Tipos explícitos** — preferir `uint8_t`, `uint16_t`, `int8_t` (`<stdint.h>`); evitar `int` en hotpaths.
 
+## Nota de compatibilidad por template
+
+- En `templates/fixed-shoot-em-up`, mantener un único `sp1_UpdateNow()` por frame en el loop principal (`main.c` o despacho de escena central).
+- Los módulos de entidad/escena deben preparar cambios diferenciales y no forzar múltiples refresh por frame.
+- Si generas ejemplos de bucle completo dentro de esta skill, marca claramente que son plantillas generales y adapta la integración final al contrato del template.
+
 ---
 
 ## Patrón 1: Estructura de proyecto y zpragma.inc
@@ -274,6 +280,7 @@ case 'N' - '0': run_exampleN(); break;
 ## Referencia rápida SP1
 
 Ver detalles completos en:
+
 - [API de funciones SP1](./references/sp1-api.md)
 - [Optimización de memoria](./references/memory-patterns.md)
 - [Draw functions y tipos de sprite](./references/draw-functions.md)

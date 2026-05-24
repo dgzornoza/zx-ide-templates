@@ -1,8 +1,8 @@
-#include "score_manager.h"
-#include "../z88dk_headers.h"
+#include "score.h"
+#include "../../../z88dk_headers.h"
 #include "tile_registry.h"
-#include "../data/fonts/numbers.h"
-#include "../state/game_state.h"
+#include "../../../data/fonts/numbers.h"
+#include "../../../game_state.h"
 
 // Position and format configuration
 #define SCORE_X_POS 21
@@ -22,7 +22,7 @@ void score_init(void)
     }
 }
 
-void score_draw(void)
+void score_render(void)
 {
     // Check if is playing and the score is different from the last drawn score to avoid unnecessary redraws
     if (game_state == STATE_PLAYING && game_score != last_drawn_score)

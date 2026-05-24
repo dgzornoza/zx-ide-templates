@@ -1,5 +1,5 @@
-#ifndef __STATE_GAME_STATE_H__
-#define __STATE_GAME_STATE_H__
+#ifndef __GAME_STATE_H__
+#define __GAME_STATE_H__
 
 #include <stdint.h>
 
@@ -19,4 +19,4 @@ extern uint8_t game_lives;
 // Initialize state for a new game
 void game_state_init(void);
 
-#endif // __STATE_GAME_STATE_H__
+#endif // __GAME_STATE_H__

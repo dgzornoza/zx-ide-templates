@@ -1,8 +1,9 @@
 #include "./z88dk_headers.h"
 #include "core/infrastructure/isr.h"
-#include "state/game_state.h"
-#include "ui/hud_manager.h"
-#include "ui/score_manager.h"
+#include "scenes/gameplay/level1.h"
+#include "game_state.h"
+#include "scenes/features/ui/hud.h"
+#include "scenes/features/ui/score.h"
 #include <intrinsic.h>
 #include <string.h>
 
@@ -26,9 +27,9 @@ int main(void)
     // Initialize global state
     game_state_init();
 
-    // Initialize visual components
-    draw_hud();
-    score_init();
+    // Initialize main menu
+    // TODO: temporal hasta que este el menu principal
+    level1_scene_init();
 
     // main app loop
     while (1)
@@ -41,7 +42,8 @@ int main(void)
         }
 
         // update game state (movement, collisions, etc.)
-        score_draw();
+        level1_scene_update();
+        level1_scene_render();
 
         // update sp1 scene
         sp1_UpdateNow();

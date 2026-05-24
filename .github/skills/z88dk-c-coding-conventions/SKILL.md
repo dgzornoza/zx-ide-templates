@@ -45,3 +45,41 @@ When writing C code for the Z80 (ZX Spectrum) using z88dk, adhere strictly to th
 
 - **Static by Default:** Any variable or function that is not strictly needed outside its `.c` file MUST be declared `static`. This prevents symbol clashes across the project and helps the compiler optimize.
 - **Minimize Globals:** If a variable must be global, clearly define it in a specific state file (like `game_state.h`) rather than creating scattered `extern` variables throughout the project.
+
+## 5. Hotpath Optimization Patterns (On Demand)
+
+Apply these patterns when optimizing loops and critical rendering/update paths:
+
+- Use `uint8_t` loop counters whenever the range fits 0-255.
+- Prefer pointer walking over indexed addressing in tight loops.
+- In inner loops, read immutable fields directly from global state structs instead of copying them to locals.
+- Keep locals in inner loops only for values that mutate each iteration.
+- Validate with generated `.lis` output before and after changes.
+
+```c
+/* Better: pointer walk + 8-bit counter */
+const uint8_t *tile_ptr = tiles;
+for (uint8_t i = 1; i <= 64; i++)
+{
+  sp1_TileEntry(i, tile_ptr);
+  tile_ptr += 8U;
+}
+```
+
+```c
+/* Better: direct global struct field in inner loop */
+for (uint8_t index = 0; index < draw_map_config.map_width; index++)
+{
+  const uint8_t *tile_data = draw_map_config.tiles_data + ((uint16_t)index * 8U);
+  sp1_TileEntry(index + 1U, tile_data);
+}
+```
+
+## 6. Optimization Goal Prompting Rule
+
+When the user requests implementation and does not specify optimization target, ask before coding:
+
+- Optimize for code size
+- Optimize for execution speed
+
+Do not assume both simultaneously in hotpaths; select one dominant objective and verify in `.lis` output.

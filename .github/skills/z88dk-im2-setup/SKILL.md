@@ -10,7 +10,7 @@ argument-hint: "Describe whether you are using SP1, your memory map constraints,
 ## When to Use
 
 - Add IM2 interrupt support to a new template.
-- Refactor existing ISR code into `src/infrastructure/`.
+- Refactor existing ISR code into the infrastructure layer (`src/core/infrastructure/` or `src/infrastructure/`, depending on the template).
 - Migrate between SP1 and non-SP1 projects.
 - Validate IM2 page selection against your memory map.
 
@@ -68,7 +68,7 @@ void im2_setup(void) {
 
 ## Placement Rules
 
-- Keep ISR and setup code in `src/infrastructure/isr.c` and expose only `im2_setup(void)` in `src/infrastructure/isr.h`.
+- Keep ISR and setup code in the template infrastructure layer (for example `src/core/infrastructure/isr.c` or `src/infrastructure/isr.c`) and expose only `im2_setup(void)` in the matching header.
 - Keep `main.c` free of IM2 implementation details.
 - Keep ISR logic short and deterministic.
 

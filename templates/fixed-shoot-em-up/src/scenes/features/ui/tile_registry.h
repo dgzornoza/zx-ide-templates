@@ -1,5 +1,5 @@
-#ifndef TILE_REGISTRY_H
-#define TILE_REGISTRY_H
+#ifndef __SCENES_FEATURES_UI_TILE_REGISTRY_H__
+#define __SCENES_FEATURES_UI_TILE_REGISTRY_H__
 
 // ============================================================================
 // SP1 TILE REGISTRY (0 - 255)
@@ -16,4 +16,4 @@
 // #define TILE_HUD_BASE            128  // Ex: 10 tiles (128-137)
 // #define TILE_BACKGROUND_BASE     138  // Ex: 50 tiles (138-187)
 
-#endif // TILE_REGISTRY_H
+#endif // __SCENES_FEATURES_UI_TILE_REGISTRY_H__

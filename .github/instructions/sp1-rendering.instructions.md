@@ -4,33 +4,31 @@ description: "Use when modifying the game loop, handling SP1 graphics/rendering 
 
 # SP1 Rendering and Game Loop Rules
 
-## 1. 50Hz Game Loop (IM2)
+This file is the mandatory rendering/runtime contract.
+Implementation templates are intentionally moved to skills to minimize default token load.
 
-- The main game loop is synchronized to the 50Hz vertical blank using IM2 interrupts.
-- A global `volatile uint8_t frame_tick` is incremented inside the `IM2_DEFINE_ISR(isr)`.
-- The main loop uses `intrinsic_halt()` while waiting for `frame_tick` to change. This puts the Z80 to sleep until the next interrupt, saving CPU cycles and leaving the bus free.
+## 1. Frame Synchronization Contract
 
-### IM2 Addressing with SP1
+- The main loop must be synchronized to the 50Hz interrupt tick (IM2).
+- Waiting between frames must yield CPU (`intrinsic_halt()` pattern).
 
-- When SP1 is active and `REGISTER_SP = 0xd000`, prefer the IM2 layout based on `0xD0`/`0xD1` pages.
-- Keep IM2 setup and ISR implementation in `src/infrastructure/`.
-- Keep `main.c` free of IM2 internals: it should only call a public setup function such as `im2_setup(void)`.
-- For code scaffolding and exact templates, use skill `z88dk-im2-setup`.
+## 2. Single Flush Contract
 
-## 2. Rendering Optimization
+- Keep exactly one `sp1_UpdateNow()` per frame in the central frame loop.
+- Do not call `sp1_UpdateNow()` from entity, UI, or service modules.
 
-- NEVER clear and redraw the entire screen every frame. The Z80 is too slow for that.
-- Keep track of the "last drawn state" inside UI or entity renderers (e.g., `static uint16_t last_drawn_score`).
-- Compare the current global state (e.g., `game_score`) with the last drawn state. Only invoke `sp1_PrintAt` or tile update functions if the value has actually changed.
+## 3. Differential Rendering Contract
 
-## 3. Assets Separation
+- Full-screen clear/redraw is forbidden during normal gameplay frames.
+- Renderers must update only tiles/sprites changed since the previous frame.
 
-- Assets are separated in the `data/` folder and included as `extern` arrays.
-- Do not embed or define raw asset arrays inside logic C files.
+## 4. Ownership Contract
 
-## 4. SP1 Initialization Rule
+- Keep IM2 setup/ISR in infrastructure modules.
+- Keep `main.c` free of IM2 internals.
+- Keep assets under `data/` as extern declarations; do not embed raw asset arrays in logic modules.
 
-- Initialize SP1 once during startup.
-- Invalidate the screen before the first frame.
-- Render/update through a single `sp1_UpdateNow()` call per frame.
-- For complete initialization templates, use skill `z88dk-sp1-codegen`.
+## 5. Detailed Guidance Location
+
+- For SP1 setup and rendering templates, use skill `z88dk-sp1-codegen`.
+- For IM2 setup templates, use skill `z88dk-im2-setup`.
