@@ -1,9 +1,8 @@
-#ifndef __DATA_PLAYER_SPRITESHEET_H__
-#define __DATA_PLAYER_SPRITESHEET_H__
+#ifndef __DATA_SPRITES_H__
+#define __DATA_SPRITES_H__
 
 #include <stdint.h>
 
-extern const uint8_t player_spritesheet_ship_base_col_1[];
-extern const uint8_t player_spritesheet_ship_base_col_2[];
+extern const uint8_t sprites_player_spritesheet_ship_base[];
 
-#endif // __DATA_PLAYER_SPRITESHEET_H__
+#endif // __DATA_SPRITES_H__

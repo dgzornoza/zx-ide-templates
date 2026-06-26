@@ -1,32 +1,27 @@
-; Data Size: 39 bytes
+; Data Size: 31 bytes
 ; Read-Only Data Section for User Module
 SECTION rodata_user
 
-PUBLIC _player_spritesheet_ship_base_col_1
-PUBLIC _player_spritesheet_ship_base_col_2
+PUBLIC _sprites_player_spritesheet_ship_base
 
     defb $00,$00,$00,$00,$00,$00,$00
 
-_player_spritesheet_ship_base_col_1:
-    defb $05
-    defb $0B
-    defb $17
-    defb $06
-    defb $11
-    defb $1F
-    defb $0D
-    defb $06
-
-    defb $00,$00,$00,$00,$00,$00,$00,$00
-
-_player_spritesheet_ship_base_col_2:
-    defb $A0
-    defb $D0
-    defb $E8
-    defb $60
-    defb $88
-    defb $F8
-    defb $B0
-    defb $60
+_sprites_player_spritesheet_ship_base:
+    defb $18
+    defb $3C
+    defb $7E
+    defb $FF
+    defb $FF
+    defb $7E
+    defb $3C
+    defb $18
+    defb $18
+    defb $18
+    defb $3C
+    defb $66
+    defb $C3
+    defb $81
+    defb $00
+    defb $00
 
     defb $00,$00,$00,$00,$00,$00,$00,$00

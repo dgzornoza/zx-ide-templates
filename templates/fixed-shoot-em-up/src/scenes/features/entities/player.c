@@ -1,7 +1,7 @@
 #include "player.h"
 #include "../../../z88dk_headers.h"
 #include "../../../data/player/player-spritesheet.h"
-#include "../../../core/input/keys_manager.h"
+#include "../../../core/input/input_manager.h"
 
 #define PLAYER_INITIAL_X 120
 #define PLAYER_INITIAL_Y 160
@@ -18,8 +18,8 @@ static const struct sp1_Rect player_clip = {0, 0, 32, 24};
 
 void player_init(void)
 {
-    player_sprite = sp1_CreateSpr(SP1_DRAW_MASK2, SP1_TYPE_2BYTE, 2, (int)player_spritesheet_ship_base_col_1, 0);
-    sp1_AddColSpr(player_sprite, SP1_DRAW_MASK2, SP1_TYPE_2BYTE, (int)player_spritesheet_ship_base_col_2, 0);
+    player_sprite = sp1_CreateSpr(SP1_DRAW_LOAD1LB, SP1_TYPE_1BYTE, 3, (int)sprites_player_spritesheet_ship_base, 0);
+    sp1_AddColSpr(player_sprite, SP1_DRAW_LOAD1RB, SP1_TYPE_1BYTE, 0, 0);
 
     player_x = PLAYER_INITIAL_X;
     player_y = PLAYER_INITIAL_Y;
@@ -50,5 +50,5 @@ void player_update(void)
 
 void player_render(void)
 {
-    sp1_MoveSprPix(player_sprite, (struct sp1_Rect *)&player_clip, (void *)player_spritesheet_ship_base_col_1, player_x, player_y);
+    sp1_MoveSprPix(player_sprite, (struct sp1_Rect *)&player_clip, 0, player_x, player_y);
 }

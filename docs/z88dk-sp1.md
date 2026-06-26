@@ -435,7 +435,7 @@ Crea un sprite principal y devuelve un puntero a `struct sp1_ss`. Define tipo de
 ```c
 struct sp1_ss *spr = sp1_CreateSpr(SP1_DRAW_MASK2, SP1_TYPE_2BYTE, 2, (int)gfx, 0);
 ```
-- Nota: `type` combina `SP1_TYPE_2BYTE`/`_1BYTE` y flags como `SP1_TYPE_OCCLUDE`. El `height` es en tiles (p. ej. 2 para 16px si cada tile 8px).
+- Nota: `type` combina `SP1_TYPE_2BYTE`/`_1BYTE` y flags como `SP1_TYPE_OCCLUDE`. El `height` es en tiles + 1 (p. ej. 3 para 16px si cada tile 8px).
 
 ### sp1_AddColSpr
 Añade una columna (tile column) al sprite ya creado. Útil para sprites más anchos que 1 tile.

@@ -1,6 +1,6 @@
 #include "level1.h"
 #include "../features/entities/player.h"
-#include "../../core/input/keys_manager.h"
+#include "../../core/input/input_manager.h"
 #include "../features/ui/score.h"
 
 void level1_scene_init(void)
@@ -10,7 +10,7 @@ void level1_scene_init(void)
 
 void level1_scene_update(void)
 {
-    keys_input_poll();
+    input_poll();
     player_update();
 }
 

@@ -19,7 +19,7 @@ int main(void)
     zx_cls(PAPER_BLACK);
 
     // Initialize SP1 engine with rotation tables and clear settings
-    sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL | SP1_IFLAG_OVERWRITE_TILES | SP1_IFLAG_OVERWRITE_DFILE, INK_BLACK | PAPER_BLACK, ' ');
+    sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL | SP1_IFLAG_OVERWRITE_TILES | SP1_IFLAG_OVERWRITE_DFILE, INK_WHITE | PAPER_BLACK, ' ');
 
     // Mark entire screen as "dirty" for the initial full render
     sp1_Invalidate(&game_area);
