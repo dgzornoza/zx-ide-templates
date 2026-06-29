@@ -1,6 +1,9 @@
 ---
-description: "Use when writing C code, game logic, entities, or state management for the Z80 architecture (ZX Spectrum). Rules for performance and memory optimization."
-applyTo: "**/*.c, **/*.h"
+name: z80-c-architecture
+description: "C code, game logic, entities, and state management on the Z80 architecture (ZX Spectrum). Rules for performance and memory optimization."
+globs:
+  - "**/*.c"
+  - "**/*.h"
 ---
 
 # Z80 C Architecture Rules

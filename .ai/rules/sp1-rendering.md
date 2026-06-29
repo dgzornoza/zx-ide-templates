@@ -1,5 +1,6 @@
 ---
-description: "Use when modifying the game loop, handling SP1 graphics/rendering arrays, and synchronizing screen updates and interrupts."
+name: sp1-rendering
+description: "Game loop, SP1 graphics/rendering arrays, screen updates, and interrupt synchronization for ZX Spectrum with z88dk SP1."
 ---
 
 # SP1 Rendering and Game Loop Rules

@@ -18,9 +18,9 @@ Use this skill for scene-level UI features.
 
 Follow:
 
-- `.github/instructions/project-architecture.instructions.md`
-- `.github/instructions/z80-c-architecture.instructions.md`
-- `.github/instructions/sp1-rendering.instructions.md`
+- `.ai/rules/project-architecture.md`
+- `.ai/rules/z80-c-architecture.md`
+- `.ai/rules/sp1-rendering.md`
 
 ## Procedure
 

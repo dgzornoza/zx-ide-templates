@@ -1,0 +1,122 @@
+# SDD / OpenSpec configuration for zx-ide-templates.
+# This file is the source of truth for SDD artifacts in this repo.
+# Edit it through sdd-init or manually with care. Do NOT delete silently.
+
+project:
+  name: zx-ide-templates
+  description: >-
+    Game templates for ZX-IDE (a VS Code extension for retro ZX Spectrum
+    game development). Active template: templates/fixed-shoot-em-up.
+  stack:
+    language: C + Z80 assembly
+    toolchain: z88dk (SDCC backend, sdcc_iy, CRT=31)
+    graphics: SP1 (z88dk sprite engine)
+    build: Makefile
+  license: AGPL-3.0-or-later
+  contribution:
+    cla: CLA.md
+    contributing: CONTRIBUTING.md
+
+artifact_store: openspec
+artifact_paths:
+  change_dir: openspec/changes
+  canonical_specs_dir: openspec/specs
+
+change_layout:
+  proposal: proposal.md
+  design: design.md
+  tasks: tasks.md
+  specs_dir: specs
+  spec_glob: "specs/**/spec.md"
+  apply_progress: apply-progress.md
+  verify_report: verify-report.md
+  sync_report: sync-report.md
+
+naming:
+  change_pattern: "^[a-z0-9][a-z0-9-]*$"
+  change_examples:
+    - agent-agnostic-guidance
+    - fixed-shooter-up-refactor
+
+testing:
+  runner: none
+  strict_tdd: false
+  rationale: >-
+    This repo ships ZX Spectrum binaries. There is no automated test runner;
+    the closest validation is a successful Makefile build for the active
+    template. Manual verification is performed via emulator or real hardware.
+  validation_commands:
+    - description: Build the active fixed-shoot-em-up template end-to-end.
+      cwd: templates/fixed-shoot-em-up
+      command: make COMPILER=sdcc CLIB=sdcc_iy CRT=31 C_OPT_FLAGS="-SO3 --opt-code-size" CREATE_SNA=true CREATE_TAP=true
+  notes: >-
+    If a future change introduces a host-side test runner, update
+    `strict_tdd` and add the runner command here. Until then, do NOT claim
+    TDD coverage you do not have.
+
+phases:
+  explore:
+    enabled: true
+    required: false
+    description: >-
+      Optional pre-proposal exploration for unclear or risky changes.
+      Writes openspec/changes/<change>/exploration.md when used.
+  proposal:
+    enabled: true
+    required: true
+    description: Why, what, non-goals, scope boundary.
+  spec:
+    enabled: true
+    required: true
+    description: Delta requirements with WHEN/SHALL/NOT scenarios.
+  design:
+    enabled: true
+    required: true
+    description: Technical approach, interfaces, data flow, risks.
+  tasks:
+    enabled: true
+    required: true
+    description: Ordered implementation tasks with review workload forecast.
+  apply:
+    enabled: true
+    required: true
+    description: Execute tasks; record progress in apply-progress.md.
+  verify:
+    enabled: true
+    required: true
+    description: Validate implementation matches specs and tasks.
+  sync:
+    enabled: true
+    required: false
+    description: Fold verified delta specs into canonical specs.
+  archive:
+    enabled: true
+    required: false
+    description: Mark a verified change as archived.
+
+review_workload:
+  budget_lines: 400
+  default_strategy: ask-always
+  notes: >-
+    Changes that exceed 400 changed lines should be split into chained PRs
+    unless the user explicitly approves a single PR. Use the chained-pr
+    skill for guidance.
+
+agent_guidance:
+  layout: cross-agent
+  root: .ai
+  master_entry: .ai/AGENTS.md
+  skills_dir: .ai/skills
+  rules_dir: .ai/rules
+  notes: >-
+    Agent guidance lives under .ai/ so it is consumable by any agent
+    (Claude Code, Gemini CLI, Cursor, GitHub Copilot via import, Aider,
+    opencode, etc.). Legacy .github/copilot-instructions.md and
+    .github/instructions/ are intentionally retired.
+
+skill_registry:
+  path: .atl/skill-registry.md
+  auto_refresh_command: /skill-registry:refresh
+  notes: >-
+    Refresh after adding or moving any SKILL.md. The registry is the
+    delegator's index; SKILL.md files remain the source of truth.

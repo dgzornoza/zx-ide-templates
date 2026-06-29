@@ -1,6 +1,9 @@
 ---
-description: "Use when implementing gameplay architecture in project templates. Defines responsibilities between main, scene, entities, and transversal services."
-applyTo: "templates/**/src/**/*.c, templates/**/src/**/*.h"
+name: project-architecture
+description: "Source-tree hierarchy, scene/feature ownership, lifecycle boundaries, and update order for project templates."
+globs:
+  - "templates/**/src/**/*.c"
+  - "templates/**/src/**/*.h"
 ---
 
 # Project Scene Architecture

@@ -18,9 +18,9 @@ Use this skill when implementing a gameplay entity feature that belongs to scene
 
 Follow architecture and platform constraints from instructions:
 
-- `.github/instructions/project-architecture.instructions.md` (scene/feature ownership)
-- `.github/instructions/z80-c-architecture.instructions.md` (CPU/memory constraints)
-- `.github/instructions/sp1-rendering.instructions.md` (SP1/frame loop constraints)
+- `.ai/rules/project-architecture.md` (scene/feature ownership)
+- `.ai/rules/z80-c-architecture.md` (CPU/memory constraints)
+- `.ai/rules/sp1-rendering.md` (SP1/frame loop constraints)
 
 ## Procedure
 

@@ -48,6 +48,17 @@ For information about third-party toolchains included in the development contain
 
 Contributions are welcome! Please read our [Contributing Guidelines](./CONTRIBUTING.md) and [Contributor License Agreement (CLA)](./CLA.md) before submitting any contributions.
 
+## AI agent guidance
+
+This repository ships cross-agent guidance under `.ai/`. The root-level [`AGENTS.md`](./AGENTS.md) is the master entry point for any AI coding agent (Claude Code, Cursor, Gemini CLI, Aider, opencode, GitHub Copilot, etc.):
+
+- `AGENTS.md` — project snapshot, hard constraints, skill and rule index.
+- `.ai/README.md` — maintainer conventions for the `.ai/` layout.
+- `.ai/skills/<name>/SKILL.md` — workflow templates (8 skills).
+- `.ai/rules/<name>.md` — mandatory contracts (3 rules).
+
+The skill registry at `.atl/skill-registry.md` is the delegator index consumed by subagents in the gentle-ai / pi-subagents harness.
+
 ## Contact
 
 Any questions or suggestions, please contact me at [dgzornoza@dgzornoza.com](mailto:dgzornoza@dgzornoza.com).

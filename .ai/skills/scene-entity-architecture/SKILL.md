@@ -19,12 +19,12 @@ Use this skill first when you need to:
 
 For project architecture and ownership rules, follow:
 
-- `.github/instructions/project-architecture.instructions.md`
+- `.ai/rules/project-architecture.md`
 
 For CPU and rendering constraints, follow global instructions:
 
-- `.github/instructions/z80-c-architecture.instructions.md`
-- `.github/instructions/sp1-rendering.instructions.md`
+- `.ai/rules/z80-c-architecture.md`
+- `.ai/rules/sp1-rendering.md`
 
 ## Architecture Decisions
 
