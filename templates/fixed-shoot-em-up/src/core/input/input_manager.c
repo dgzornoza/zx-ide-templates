@@ -2,23 +2,22 @@
 #include <input.h>
 #include <input/input_zx.h>
 
-static udk_t keyboard_joystick_bindings;
+InputBindings input_bindings;
 
-static uint8_t left_pressed = 0;
-static uint8_t right_pressed = 0;
-static uint8_t up_pressed = 0;
-static uint8_t down_pressed = 0;
+static const InputBindings default_bindings = {
+    IN_KEY_SCANCODE_5,
+    IN_KEY_SCANCODE_8,
+    IN_KEY_SCANCODE_7,
+    IN_KEY_SCANCODE_6,
+    IN_KEY_SCANCODE_SPACE};
+
+static uint8_t pressed_flags = 0;
 static uint8_t input_initialized = 0;
-
-static uint16_t keyboard_left_scancode = IN_KEY_SCANCODE_5;
-static uint16_t keyboard_right_scancode = IN_KEY_SCANCODE_8;
-static uint16_t keyboard_up_scancode = IN_KEY_SCANCODE_7;
-static uint16_t keyboard_down_scancode = IN_KEY_SCANCODE_6;
 
 static InputMode input_mode = INPUT_MODE_KEYBOARD_ONLY;
 static InputJoystickType joystick_type = INPUT_JOYSTICK_KEMPSTON;
 
-static uint16_t read_joystick_state(void)
+static uint16_t read_joystick_state(void) __z88dk_fastcall
 {
     switch (joystick_type)
     {
@@ -28,52 +27,38 @@ static uint16_t read_joystick_state(void)
         return (uint16_t)in_stick_sinclair2();
     case INPUT_JOYSTICK_FULLER:
         return (uint16_t)in_stick_fuller();
-    case INPUT_JOYSTICK_KEYBOARD:
-        return (uint16_t)in_stick_keyboard(&keyboard_joystick_bindings);
     case INPUT_JOYSTICK_KEMPSTON:
     default:
         return (uint16_t)in_stick_kempston();
     }
 }
 
-void input_set_mode(InputMode mode)
+void input_set_mode(InputMode mode) __z88dk_fastcall
 {
     input_mode = mode;
 }
 
-void input_set_joystick_type(InputJoystickType new_joystick_type)
+void input_set_joystick_type(InputJoystickType new_joystick_type) __z88dk_fastcall
 {
     joystick_type = new_joystick_type;
 }
 
-void input_set_keyboard_bindings(uint16_t left_scancode, uint16_t right_scancode, uint16_t up_scancode, uint16_t down_scancode)
+void input_set_keyboard_bindings(const InputBindings *new_bindings) __z88dk_fastcall
 {
-    keyboard_left_scancode = left_scancode;
-    keyboard_right_scancode = right_scancode;
-    keyboard_up_scancode = up_scancode;
-    keyboard_down_scancode = down_scancode;
-
-    keyboard_joystick_bindings.left = left_scancode;
-    keyboard_joystick_bindings.right = right_scancode;
-    keyboard_joystick_bindings.up = up_scancode;
-    keyboard_joystick_bindings.down = down_scancode;
+    input_bindings = *new_bindings;
 }
 
-void input_reset_defaults(void)
+void input_reset_defaults(void) __z88dk_fastcall
 {
     input_mode = INPUT_MODE_KEYBOARD_ONLY;
     joystick_type = INPUT_JOYSTICK_KEMPSTON;
-    input_set_keyboard_bindings(IN_KEY_SCANCODE_5, IN_KEY_SCANCODE_8, IN_KEY_SCANCODE_7, IN_KEY_SCANCODE_6);
-    keyboard_joystick_bindings.fire = IN_KEY_SCANCODE_DISABLE;
+    input_set_keyboard_bindings(&default_bindings);
 }
 
-void input_poll(void)
+void input_poll(void) __z88dk_fastcall
 {
     uint16_t joystick_state = 0;
-    uint8_t keyboard_left = 0;
-    uint8_t keyboard_right = 0;
-    uint8_t keyboard_up = 0;
-    uint8_t keyboard_down = 0;
+    uint8_t flags = 0;
 
     if (!input_initialized)
     {
@@ -83,39 +68,57 @@ void input_poll(void)
 
     if (input_mode != INPUT_MODE_JOYSTICK_ONLY)
     {
-        keyboard_left = (uint8_t)in_key_pressed(keyboard_left_scancode);
-        keyboard_right = (uint8_t)in_key_pressed(keyboard_right_scancode);
-        keyboard_up = (uint8_t)in_key_pressed(keyboard_up_scancode);
-        keyboard_down = (uint8_t)in_key_pressed(keyboard_down_scancode);
+        if (in_key_pressed(input_bindings.left))
+        {
+            flags |= INPUT_FLAG_LEFT;
+        }
+        if (in_key_pressed(input_bindings.right))
+        {
+            flags |= INPUT_FLAG_RIGHT;
+        }
+        if (in_key_pressed(input_bindings.up))
+        {
+            flags |= INPUT_FLAG_UP;
+        }
+        if (in_key_pressed(input_bindings.down))
+        {
+            flags |= INPUT_FLAG_DOWN;
+        }
+        if (in_key_pressed(input_bindings.fire1))
+        {
+            flags |= INPUT_FLAG_FIRE1;
+        }
     }
 
     if (input_mode != INPUT_MODE_KEYBOARD_ONLY)
     {
         joystick_state = read_joystick_state();
+        if (joystick_state & IN_STICK_LEFT)
+        {
+            flags |= INPUT_FLAG_LEFT;
+        }
+        if (joystick_state & IN_STICK_RIGHT)
+        {
+            flags |= INPUT_FLAG_RIGHT;
+        }
+        if (joystick_state & IN_STICK_UP)
+        {
+            flags |= INPUT_FLAG_UP;
+        }
+        if (joystick_state & IN_STICK_DOWN)
+        {
+            flags |= INPUT_FLAG_DOWN;
+        }
+        if (joystick_state & IN_STICK_FIRE)
+        {
+            flags |= INPUT_FLAG_FIRE1;
+        }
     }
 
-    left_pressed = (uint8_t)(keyboard_left || (joystick_state & IN_STICK_LEFT));
-    right_pressed = (uint8_t)(keyboard_right || (joystick_state & IN_STICK_RIGHT));
-    up_pressed = (uint8_t)(keyboard_up || (joystick_state & IN_STICK_UP));
-    down_pressed = (uint8_t)(keyboard_down || (joystick_state & IN_STICK_DOWN));
+    pressed_flags = flags;
 }
 
-uint8_t is_left_pressed(void)
+uint8_t input_get_pressed(void) __z88dk_fastcall
 {
-    return left_pressed;
-}
-
-uint8_t is_right_pressed(void)
-{
-    return right_pressed;
-}
-
-uint8_t is_up_pressed(void)
-{
-    return up_pressed;
-}
-
-uint8_t is_down_pressed(void)
-{
-    return down_pressed;
+    return pressed_flags;
 }

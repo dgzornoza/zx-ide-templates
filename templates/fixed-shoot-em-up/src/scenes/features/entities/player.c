@@ -27,22 +27,24 @@ void player_init(void)
 
 void player_update(void)
 {
-    if (is_left_pressed() && player_x > PLAYER_MIN_X)
+    const uint8_t pressed = input_get_pressed();
+
+    if ((pressed & INPUT_FLAG_LEFT) && player_x > PLAYER_MIN_X)
     {
         player_x -= PLAYER_SPEED_PIXELS;
     }
 
-    if (is_right_pressed() && player_x < PLAYER_MAX_X)
+    if ((pressed & INPUT_FLAG_RIGHT) && player_x < PLAYER_MAX_X)
     {
         player_x += PLAYER_SPEED_PIXELS;
     }
 
-    if (is_up_pressed() && player_y > PLAYER_MIN_Y)
+    if ((pressed & INPUT_FLAG_UP) && player_y > PLAYER_MIN_Y)
     {
         player_y -= PLAYER_SPEED_PIXELS;
     }
 
-    if (is_down_pressed() && player_y < PLAYER_MAX_Y)
+    if ((pressed & INPUT_FLAG_DOWN) && player_y < PLAYER_MAX_Y)
     {
         player_y += PLAYER_SPEED_PIXELS;
     }

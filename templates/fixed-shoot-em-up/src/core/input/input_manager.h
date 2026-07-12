@@ -24,39 +24,58 @@ typedef enum
     /** Sinclair Interface II, player 2 mapping. */
     INPUT_JOYSTICK_SINCLAIR2,
     /** Fuller joystick interface. */
-    INPUT_JOYSTICK_FULLER,
-    /** Keyboard-simulated joystick using current key bindings. */
-    INPUT_JOYSTICK_KEYBOARD
+    INPUT_JOYSTICK_FULLER
 } InputJoystickType;
 
+/** Keyboard scancode bindings for all polled actions. */
+typedef struct
+{
+    uint16_t left;
+    uint16_t right;
+    uint16_t up;
+    uint16_t down;
+    uint16_t fire1;
+} InputBindings;
+
+/** Bit flags returned by input_get_pressed(). AND with the relevant flag to test an action. */
+typedef enum
+{
+    INPUT_FLAG_LEFT = (1u << 0),
+    INPUT_FLAG_RIGHT = (1u << 1),
+    INPUT_FLAG_UP = (1u << 2),
+    INPUT_FLAG_DOWN = (1u << 3),
+    INPUT_FLAG_FIRE1 = (1u << 4)
+} InputFlags;
+
+/** Global binding state. Read each frame by input_poll(). */
+extern InputBindings input_bindings;
+
 /**
- * Polls current input state and updates directional pressed flags.
+ * Polls current input state and updates the pressed-flags bitmask.
  * Call once per frame before gameplay update.
  */
-void input_poll(void);
-
-/** Sets active input mode (keyboard, joystick, or both). */
-void input_set_mode(InputMode mode);
-
-/** Selects joystick backend used when joystick input is enabled. */
-void input_set_joystick_type(InputJoystickType joystick_type);
+void input_poll(void) __z88dk_fastcall;
 
 /**
- * Sets keyboard scancodes for left, right, up and down actions.
- * These bindings are also reused when joystick type is keyboard.
+ * Returns the bitmask of actions currently pressed.
+ * Combine with InputFlags using bitwise AND: `(input_get_pressed() & INPUT_FLAG_LEFT)`.
+ * Reading once per frame and testing multiple flags is cheaper than calling a getter per action.
  */
-void input_set_keyboard_bindings(uint16_t left_scancode, uint16_t right_scancode, uint16_t up_scancode, uint16_t down_scancode);
+uint8_t input_get_pressed(void) __z88dk_fastcall;
+
+/** Sets active input mode (keyboard, joystick, or both). */
+void input_set_mode(InputMode mode) __z88dk_fastcall;
+
+/** Selects joystick backend used when joystick input is enabled. */
+void input_set_joystick_type(InputJoystickType joystick_type) __z88dk_fastcall;
+
+/**
+ * Sets keyboard scancodes for all actions from the given struct.
+ * Also keeps the keyboard-as-joystick bindings in sync.
+ */
+void input_set_keyboard_bindings(const InputBindings *bindings) __z88dk_fastcall;
 
 /** Restores default mode, joystick type and keyboard bindings. */
-void input_reset_defaults(void);
-
-/** Returns whether the left input is currently pressed. */
-uint8_t is_left_pressed(void);
-/** Returns whether the right input is currently pressed. */
-uint8_t is_right_pressed(void);
-/** Returns whether the up input is currently pressed. */
-uint8_t is_up_pressed(void);
-/** Returns whether the down input is currently pressed. */
-uint8_t is_down_pressed(void);
+void input_reset_defaults(void) __z88dk_fastcall;
 
 #endif // __CORE_INPUT_INPUT_MANAGER_H__
