@@ -36,7 +36,7 @@ _invert_horizontal_tile:
     pop bc          ; BC = dest pointer
 
     ; 2. Bucle desenrollado (Unrolled) para máximo rendimiento
-    ; Repetimos el bloque 8 veces (una por cada fila del tile)
+    ; Se repite el bloque 8 veces (una por cada fila del tile)
     REPT 8
         ld e, (hl)  ; E = byte original
         ld a, (de)  ; A = byte espejado (desde mirror_table)
