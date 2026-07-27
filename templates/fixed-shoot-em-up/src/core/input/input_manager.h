@@ -71,8 +71,7 @@ void input_poll(PlayerId player) __z88dk_fastcall;
 
 /**
  * Returns the InputFlags bitmask for the given player. Read once per frame
- * and AND each flag in your consumer; cheaper than one getter per action.
- * Out-of-range player is UB.
+ * and AND each flag in your consumer.
  */
 uint8_t input_get_pressed(uint8_t player) __z88dk_fastcall;
 

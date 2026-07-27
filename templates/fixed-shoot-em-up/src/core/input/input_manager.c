@@ -10,7 +10,7 @@ uint8_t keyboard_cache[8];
 
 /**
  * Per-player state. 26 B BSS (2 x 13 B). BSS-zero at boot, so a player that
- * has not been reset reads pressed=0 (REQ-006 first-frame tie-break holds).
+ * has not been reset reads pressed=0.
  */
 static InputPlayerState players[INPUT_MAX_PLAYERS];
 
@@ -26,7 +26,8 @@ static const InputBindings default_bindings = {
 static const uint8_t default_joy[INPUT_MAX_PLAYERS] = {
     INPUT_JOYSTICK_KEMPSTON
 #if INPUT_MAX_PLAYERS >= 2
-    , INPUT_JOYSTICK_SINCLAIR2
+    ,
+    INPUT_JOYSTICK_SINCLAIR2
 #endif
 };
 
@@ -34,7 +35,7 @@ static const uint8_t default_joy[INPUT_MAX_PLAYERS] = {
  * Resolves the half-row index for a row-selector byte. The Spectrum returns
  * the active-low 5 bits for the row whose bit is clear in the selector.
  * The selector has exactly one bit = 0; its position is the row index.
- * Switch over the 8 valid selectors; default returns 0 (DEFS safety).
+ * Switch over the 8 valid selectors. default returns 0 (DEFS safety).
  */
 static uint8_t row_low_to_index(uint8_t l)
 {
@@ -105,36 +106,31 @@ static uint16_t read_joystick_state(uint8_t player) __z88dk_fastcall
     }
 }
 
-/**
- * Poll one player: combine cached keyboard state for that player's bindings
- * with the joystick (if mode allows), and store the resulting InputFlags.
- * ZERO port $FE reads; ZERO port-joystick reads unless joystick is enabled.
- */
-void input_poll(PlayerId player) __z88dk_fastcall
+void input_poll(PlayerId playerId) __z88dk_fastcall
 {
     uint8_t flags = 0;
-    const InputPlayerState *p = &players[player];
-    const InputMode mode = (InputMode)p->mode;
+    const InputPlayerState *player = &players[playerId];
+    const InputMode mode = (InputMode)player->mode;
 
     if (mode != INPUT_MODE_JOYSTICK_ONLY)
     {
-        if (cache_test_scancode(p->bindings.left))
+        if (cache_test_scancode(player->bindings.left))
         {
             flags |= INPUT_FLAG_LEFT;
         }
-        if (cache_test_scancode(p->bindings.right))
+        if (cache_test_scancode(player->bindings.right))
         {
             flags |= INPUT_FLAG_RIGHT;
         }
-        if (cache_test_scancode(p->bindings.up))
+        if (cache_test_scancode(player->bindings.up))
         {
             flags |= INPUT_FLAG_UP;
         }
-        if (cache_test_scancode(p->bindings.down))
+        if (cache_test_scancode(player->bindings.down))
         {
             flags |= INPUT_FLAG_DOWN;
         }
-        if (cache_test_scancode(p->bindings.fire1))
+        if (cache_test_scancode(player->bindings.fire1))
         {
             flags |= INPUT_FLAG_FIRE1;
         }
@@ -142,7 +138,7 @@ void input_poll(PlayerId player) __z88dk_fastcall
 
     if (mode != INPUT_MODE_KEYBOARD_ONLY)
     {
-        const uint16_t joystick_state = read_joystick_state(player);
+        const uint16_t joystick_state = read_joystick_state(playerId);
         if (joystick_state & IN_STICK_LEFT)
         {
             flags |= INPUT_FLAG_LEFT;
@@ -165,7 +161,7 @@ void input_poll(PlayerId player) __z88dk_fastcall
         }
     }
 
-    players[player].pressed = flags;
+    players[playerId].pressed = flags;
 }
 
 uint8_t input_get_pressed(uint8_t player) __z88dk_fastcall
@@ -173,10 +169,6 @@ uint8_t input_get_pressed(uint8_t player) __z88dk_fastcall
     return players[player].pressed;
 }
 
-/**
- * Per-player reset (REQ decision #3): bind shared default keyboard, mode =
- * KEYBOARD_ONLY, joystick_type = default_joy[player] (P0=Kempston, P1=Sinclair2).
- */
 void input_reset_defaults(uint8_t player) __z88dk_fastcall
 {
     players[player].bindings = default_bindings;
@@ -184,7 +176,6 @@ void input_reset_defaults(uint8_t player) __z88dk_fastcall
     players[player].joystick_type = default_joy[player];
 }
 
-/** Mirrors asm_in_key_pressed; zero port I/O. */
 uint8_t input_keyboard_pressed(uint16_t scancode) __z88dk_fastcall
 {
     return cache_test_scancode(scancode);
