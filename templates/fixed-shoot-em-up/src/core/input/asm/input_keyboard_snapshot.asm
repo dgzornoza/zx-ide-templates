@@ -1,7 +1,5 @@
 SECTION code_user
 
-EXTERN _keyboard_cache
-
 ;-------------------------------------------------------------------------------
 ; input_keyboard_snapshot.asm
 ; Captures the ZX Spectrum keyboard matrix state in a single 8-IN sweep of
@@ -15,7 +13,7 @@ EXTERN _keyboard_cache
 ;   The 8 row selectors are $fe, $fd, $fb, $f7, $ef, $df, $bf, $7f (one bit
 ;   clear per row, the rest set; the cleared bit selects which half-row the
 ;   port returns).
-; Clobbers: AF, BC, DE  (NOT IX/IY; sdcc_iy reserves IY; no PUSH/POP of IX/IY)
+; Clobbers: AF, BC, DE  (NOT IX/IY, sdcc_iy reserves IY, no PUSH/POP of IX/IY)
 ; Returns: None
 ; Stack: unchanged at call site (no args, no saved registers)
 ;-------------------------------------------------------------------------------
@@ -38,3 +36,12 @@ _input_keyboard_snapshot:
 
 .row_table:
    defb $fe, $fd, $fb, $f7, $ef, $df, $bf, $7f
+
+;-------------------------------------------------------------------------------
+; BSS storage for the snapshot. C consumers read it via `extern uint8_t keyboard_cache[8];`
+; from input_keyboard_snapshot.h. Size matches the 8 half-rows the port sweep populates.
+;-------------------------------------------------------------------------------
+SECTION bss_user
+PUBLIC _keyboard_cache
+_keyboard_cache:
+   DEFS 8

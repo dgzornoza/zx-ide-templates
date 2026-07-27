@@ -39,6 +39,7 @@ When writing C code for the Z80 (ZX Spectrum) using z88dk, adhere strictly to th
 
 - **Use `<stdint.h>` types:** Always use explicit fixed-width integers (`uint8_t`, `int8_t`, `uint16_t`, `int16_t`). Do not use standard `int` or `char` without explicit sign/size formatting.
 - **8-bit preferred:** The Z80 is an 8-bit processor. 16-bit math is slower and takes more code space. Use `uint8_t` or `int8_t` for loops, array indexing, and counters whenever the maximum value fits in 0-255.
+- **Enum storage is the smallest fitting type by default:** SDCC selects the underlying integer type for an enum as the first of `unsigned char`, `signed char`, `unsigned int`, `signed int`, `unsigned long int`, `signed long int`, ... that fits all enumerator constants (see SDCC manual §"Structures, unions, enumerations and bit-fields"). There is no `--short-enums` flag — this small-fitting behavior IS the default. So an enum whose constants fit in 0–255 occupies **1 byte** in memory without any pragma. Prefer typed `enum` fields over `uint8_t` in layout-sensitive structs (BSS, save-state layouts, `sizeof`-documented structs) when there is a stable domain: you gain type-safety at the API boundary (no `(uint8_t)` cast on assignment) at zero memory cost vs `uint8_t`. **Always verify empirically** via the `.map`/`.lis` after a build before committing a struct that documents per-field offsets, since the rule is a compiler detail not enforced by the C type system.
 - **ROM vs RAM (`const`):** Mark read-only data (like tilemaps, sprites, text strings) as `const` so the compiler can place them in ROM instead of consuming precious RAM.
 
 ## 4. Scope and Encapsulation
@@ -189,3 +190,87 @@ For example, a function taking **three `uint8_t` parameters** passes the first t
 - For multi-parameter APIs, prefer `__sdcccall(1)` (current default) to keep the first 1–2 parameters in registers and the rest on the stack.
 - For config-style state with many fields, prefer a batch setter that takes a pointer to a global struct (see section 7) instead of either an N-parameter function or a `switch`-based per-action setter. The struct is accessed by name in hotpaths, costing zero extra bytes vs separate statics.
 - The current codebase applies `__z88dk_fastcall` only to 0-or-1-parameter functions (`input_poll`, `input_get_pressed`, `input_set_mode`, `input_set_joystick_type`, `input_reset_defaults`, `read_joystick_state`). Follow that pattern.
+
+## 10. sdcc_iy Stack Layout — Reading the `.lis`
+
+When `sdcc_iy` emits assembly for a function, four idioms repeat and look strange until you know what they mean. **All four are `sdcc_iy`-specific**; they do not appear with `__sdcccall(0)` or `__sdcccall(1)` because those conventions do not reserve `IX` as a frame pointer. The canonical example is `input_poll` in `templates/fixed-shoot-em-up/src/core/input/input_manager.c:108`.
+
+### 10.1 Frame pointer (`IX`) save/restore — mandatory
+
+`sdcc_iy` reserves `IX` as the **caller's frame pointer**. Every function MUST:
+
+```
+push ix             ; save caller's IX
+ld ix, #<framesize> ; placeholder — linker patches with local-storage size
+add ix, sp          ; IX = SP + framesize (pointing into caller's frame)
+... function body uses (ix-N) for parameters and locals ...
+ld sp, ix           ; restore SP from IX (also deallocates locals)
+pop ix              ; restore caller's IX
+ret
+```
+
+There is no escape hatch: omitting the `push ix` / `pop ix` would clobber the caller's frame pointer and silently break every local access in the caller's code path. Every `__z88dk_fastcall` function in this template pays this cost (see e.g. `input_manager.c:108`, `read_joystick_state:92`).
+
+### 10.2 Stack reservation via `push af` / `push hl`
+
+Z80 cannot decrement `SP` in a single instruction, so SDCC allocates local storage by pushing scratch registers. Each `push rr` reserves 2 bytes. Values pushed are **discardable garbage** — `AF` (or whichever scratch register SDCC chose) is not preserved across calls.
+
+In `input_poll`:
+
+```
+push af        ; SP-=2  ┐
+push af        ; SP-=2  ├ 3 pushes reserve 6 B total
+push af        ; SP-=2  ┘
+ld  (ix-1), l  ; store the playerId parameter at the first reserved byte
+```
+
+**How many bytes were reserved?** Count pushes × 2. For `input_poll`:
+
+| Offset     | Source               | Size |
+|------------|----------------------|------|
+| `(ix-1)`   | `playerId` parameter | 1 B  |
+| `(ix-2)`   | `mode` (cached)      | 1 B  |
+| `(ix-3..4)`| `player` pointer     | 2 B  |
+| `(ix-5..6)`| `player` pointer (duplicate) | 2 B |
+
+6 reserved, 6 used. `flags` lives in register `E` for the whole function — see `set 0/1/2/3/4, e` in the `.lis`. The "duplicate" pointer is intentional (§10.3 explains why).
+
+### 10.3 The pop-push idiom (cheap 16-bit local load)
+
+When a 16-bit local happens to sit at the current `SP` (true for every local reserved via `push` and not overwritten by `ld (ix-N), r`), SDCC loads it with a 1-byte `pop rr` instead of a 3-byte `ld c,(ix-N); ld b,(ix-N+1)`. To keep `SP` consistent for the rest of the function, the loaded value is pushed back immediately:
+
+```
+pop hl              ; 1 byte — load local into HL
+... use HL ...
+push hl             ; 1 byte — restore SP (and re-store the local)
+```
+
+When two 16-bit locals are needed at once and SDCC wants them in two registers (e.g. `HL` + `BC`), the idiom doubles:
+
+```
+pop hl              ; load local A into HL (1 B)
+pop bc              ; load local B into BC (1 B)
+push bc             ; restore SP+2 (1 B)
+push hl             ; restore SP+0 (1 B)
+```
+
+In `input_poll`, the function stores the `player` pointer **twice** — at `(ix-6)/(ix-5)` and at `(ix-4)/(ix-3)` — specifically so both `HL` and `BC` can be `pop`-loaded (4 B total) instead of doing two `ld rr,(ix-N)` pairs (12 B). The duplicate store costs 8 B up front but saves net bytes because `player` is used 7 times (mode + 5 bindings + joystick).
+
+**When you see a pop-push in a `.lis`:**
+
+- The `pop` values are **NOT** garbage — they are the function's just-stored locals. Verify by comparing against `ld (ix-N), r` writes in the prologue.
+- Each `pop` outside the epilogue is a deliberate local load via stack, not register restoration.
+- The trailing `push` keeps `SP` consistent for subsequent stack-relative accesses (`add hl, sp; ...`).
+
+### 10.4 Reading a `.lis` prologue — checklist
+
+When facing a new `__z88dk_fastcall` function in a `.lis`, walk this:
+
+1. **`push ix; ld ix, #0; add ix, sp`** — frame pointer setup. Mandatory in `sdcc_iy`.
+2. **Pushes of `af`/`hl`/`bc`/`de`** — count them. Bytes reserved = pushes × 2.
+3. **`ld (ix-N), r` immediately after pushes** — initial local assignment, typically a parameter like `playerId`.
+4. **Repeated `ld (ix-N), l; ld (ix-N+1), h` pairs** — local stores. Skip the duplicated pairs unless an idiom in (3) or pop-push needs them — they signal a peephole choice (see §10.3), not wasted bytes.
+5. **`pop rr` outside the epilogue** — paired local loads; look for the matching `push rr` shortly after.
+6. **`ld sp, ix; pop ix; ret`** at the end — mandatory epilogue.
+
+If the prologue does NOT match step 1 (no `push ix`), the function is using `__sdcccall(0)` or `__sdcccall(1)` instead — check the function's attribute, not the prologue shape.

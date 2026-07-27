@@ -1,14 +1,17 @@
 #include "level1.h"
 #include "../features/entities/player.h"
 #include "../../core/input/input_manager.h"
+#include "../../core/game_definitions.h"
 #include "../features/ui/score.h"
+#include "../features/ui/hud.h"
 
 void level1_scene_init(void)
 {
     player_init(PLAYER_1);
-    // Reset both players' input state so the first poll has valid bindings
+
+    // Reset all players input state
     input_reset_defaults(PLAYER_1);
-#if INPUT_MAX_PLAYERS >= 2
+#if ALLOWED_GAME_PLAYERS >= 2
     input_reset_defaults(PLAYER_2);
 #endif
 }
@@ -22,7 +25,7 @@ void level1_scene_update(void)
      * The single sp1_UpdateNow() per frame stays in main.c. */
     input_keyboard_snapshot();
     input_poll(PLAYER_1);
-#if INPUT_MAX_PLAYERS >= 2
+#if ALLOWED_GAME_PLAYERS >= 2
     input_poll(PLAYER_2);
 #endif
     player_update(PLAYER_1);

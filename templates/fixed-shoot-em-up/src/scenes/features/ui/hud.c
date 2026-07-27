@@ -3,7 +3,7 @@
 #include "../../../data/hud/hud-map.h"
 #include "../../../data/hud/hud-tiles.h"
 #include "../../../core/utils/draw_map_region.h"
-#include "../../../core/definitions.h"
+#include "../../../core/system_definitions.h"
 
 // hud position
 #define HUD_X_OFFSET 0

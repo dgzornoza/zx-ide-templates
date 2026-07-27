@@ -1,31 +1,26 @@
 #include "input_manager.h"
+#include "asm/input_keyboard_snapshot.h"
+#include "../game_definitions.h"
 #include <input.h>
 #include <input/input_zx.h>
 
 /**
- * Cache of 8 inverted half-row reads, populated each frame by the snapshot
- * ASM in asm/input_keyboard_snapshot.asm. The ASM `EXTERN`s this symbol.
+ * Per-player state. BSS-zero at boot, so a player that has not been reset reads pressed=0.
  */
-uint8_t keyboard_cache[8];
+static InputPlayerState players[ALLOWED_GAME_PLAYERS];
 
-/**
- * Per-player state. 26 B BSS (2 x 13 B). BSS-zero at boot, so a player that
- * has not been reset reads pressed=0.
- */
-static InputPlayerState players[INPUT_MAX_PLAYERS];
-
-/** Shared default keyboard bindings; one copy in ROM (REQ-009). */
+/** Shared default keyboard bindings. */
 static const InputBindings default_bindings = {
-    IN_KEY_SCANCODE_5,
-    IN_KEY_SCANCODE_8,
-    IN_KEY_SCANCODE_7,
-    IN_KEY_SCANCODE_6,
+    IN_KEY_SCANCODE_o,
+    IN_KEY_SCANCODE_p,
+    IN_KEY_SCANCODE_q,
+    IN_KEY_SCANCODE_a,
     IN_KEY_SCANCODE_SPACE};
 
-/** Per-player default joystick backend. P0=Kempston, P1=Sinclair2 (if MAX >= 2). */
-static const uint8_t default_joy[INPUT_MAX_PLAYERS] = {
+/** Per-player default joystick backend. P0=Kempston, P1=Sinclair2. */
+static const uint8_t default_joy[ALLOWED_GAME_PLAYERS] = {
     INPUT_JOYSTICK_KEMPSTON
-#if INPUT_MAX_PLAYERS >= 2
+#if ALLOWED_GAME_PLAYERS == 2
     ,
     INPUT_JOYSTICK_SINCLAIR2
 #endif
@@ -34,12 +29,12 @@ static const uint8_t default_joy[INPUT_MAX_PLAYERS] = {
 /**
  * Resolves the half-row index for a row-selector byte. The Spectrum returns
  * the active-low 5 bits for the row whose bit is clear in the selector.
- * The selector has exactly one bit = 0; its position is the row index.
+ * The selector has exactly one bit = 0, its position is the row index.
  * Switch over the 8 valid selectors. default returns 0 (DEFS safety).
  */
-static uint8_t row_low_to_index(uint8_t l)
+static uint8_t row_low_to_index(uint8_t row_low) __z88dk_fastcall
 {
-    switch (l)
+    switch (row_low)
     {
     case 0xfe:
         return 0;
@@ -63,8 +58,8 @@ static uint8_t row_low_to_index(uint8_t l)
 }
 
 /**
- * Test one scancode against the live keyboard_cache. Mirrors
- * asm_in_key_pressed bit-for-bit; zero port I/O.
+ * Test one scancode against the live keyboard_cache.
+ * Mirrors asm_in_key_pressed bit-for-bit, zero port I/O.
  *  H: flags + low-5-bit key mask
  *  L: row selector -> half-row index in keyboard_cache
  */
@@ -92,7 +87,7 @@ static uint8_t cache_test_scancode(uint16_t scancode) __z88dk_fastcall
  */
 static uint16_t read_joystick_state(uint8_t player) __z88dk_fastcall
 {
-    switch ((InputJoystickType)players[player].joystick_type)
+    switch (players[player].joystick_type)
     {
     case INPUT_JOYSTICK_SINCLAIR1:
         return (uint16_t)in_stick_sinclair1();
@@ -110,7 +105,7 @@ void input_poll(PlayerId playerId) __z88dk_fastcall
 {
     uint8_t flags = 0;
     const InputPlayerState *player = &players[playerId];
-    const InputMode mode = (InputMode)player->mode;
+    const InputMode mode = player->mode;
 
     if (mode != INPUT_MODE_JOYSTICK_ONLY)
     {

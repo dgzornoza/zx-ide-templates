@@ -1,5 +1,5 @@
 #include "../../z88dk_headers.h"
-#include "../definitions.h"
+#include "../system_definitions.h"
 #include "asm/invert_horizontal_tile.h"
 #include "draw_map_region.h"
 

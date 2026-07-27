@@ -45,7 +45,7 @@ Skills are workflow templates under `.ai/skills/<name>/SKILL.md`. Load the skill
 | `z88dk-c-coding-conventions` | Writing or refactoring C code for z88dk (style + hotpath optimization). |
 | `z88dk-im2-setup` | Creating or refactoring IM2 interrupt setup, with or without SP1. |
 | `z88dk-sp1-codegen` | Implementing SP1 sprites, tiles, collisions, render loops, performance patterns. |
-| `zxide-framework` | Adding, modifying, or auditing framework-level configuration (`definitions.h`, compile-time flags, per-template constants, player identifiers). |
+| `zxide-framework` | Adding, modifying, or auditing framework-level configuration (the `core/*_definitions.h` family: system, game, framework flags, player identifiers). |
 
 Priority order when multiple skills apply: `scene-entity-architecture` first, then the relevant creation skill, then `z88dk-im2-setup` / `z88dk-sp1-codegen`, then `z88dk-c-coding-conventions` for style passes.
 

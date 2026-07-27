@@ -6,8 +6,6 @@
 /**
  * 8-byte cache of inverted half-row reads from port $FE (one byte per
  * half-row, low 5 bits, bit=1 means the corresponding key is held).
- * Owned and populated by input_keyboard_snapshot(); read by input manager
- * code and any caller that wants zero-I/O access to arbitrary keys.
  */
 extern uint8_t keyboard_cache[8];
 
@@ -16,10 +14,9 @@ extern uint8_t keyboard_cache[8];
  * 8-IN sweep of port $FE, populating `keyboard_cache[8]`.
  *
  * Implemented to keep the snapshot to a single hardware-side scan per frame.
- * Callers MUST invoke this exactly once per frame, before any
- * per-player input_poll().
+ * Callers MUST invoke this exactly once per frame, before any per-player input_poll().
  *
- * Clobbers: AF, BC, DE (MUST NOT touch IX/IY; sdcc_iy reserves IY).
+ * Clobbers: AF, BC, DE.
  * Stack depth: unchanged at call site (no args, no saved registers).
  */
 extern void input_keyboard_snapshot(void) __z88dk_fastcall;
