@@ -2,6 +2,11 @@
 #define __CORE_INPUT_INPUT_MANAGER_H__
 
 #include <stdint.h>
+#include "asm/input_keyboard_snapshot.h"
+#include "../definitions.h"
+
+/* INPUT_MAX_PLAYERS and PlayerId live in src/core/definitions.h
+ * (framework configuration) so per-template customization happens in one place. */
 
 /** Selects which input sources are evaluated each frame. */
 typedef enum
@@ -47,35 +52,64 @@ typedef enum
     INPUT_FLAG_FIRE1 = (1u << 4)
 } InputFlags;
 
-/** Global binding state. Read each frame by input_poll(). */
-extern InputBindings input_bindings;
+/** Per-player input state. Sized exactly for sdcc_iy; verify via .map if refactored. */
+typedef struct
+{
+    InputBindings bindings; /* offset 0;  10 B */
+    uint8_t pressed;        /* offset 10; InputFlags bitmask */
+    uint8_t mode;           /* offset 11; raw InputMode (uint8_t, NOT typed enum) */
+    uint8_t joystick_type;  /* offset 12; raw InputJoystickType (uint8_t, NOT typed enum) */
+} InputPlayerState;         /* sizeof = 13 */
 
 /**
- * Polls current input state and updates the pressed-flags bitmask.
- * Call once per frame before gameplay update.
+ * Per-player poll: combines the cached keyboard state for that player's
+ * bindings with the player's joystick (if mode allows) and updates
+ * players[player].pressed. ZERO port I/O after input_keyboard_snapshot()
+ * has been called this frame.
  */
-void input_poll(void) __z88dk_fastcall;
+void input_poll(PlayerId player) __z88dk_fastcall;
 
 /**
- * Returns the bitmask of actions currently pressed.
- * Combine with InputFlags using bitwise AND: `(input_get_pressed() & INPUT_FLAG_LEFT)`.
- * Reading once per frame and testing multiple flags is cheaper than calling a getter per action.
+ * Returns the InputFlags bitmask for the given player. Read once per frame
+ * and AND each flag in your consumer; cheaper than one getter per action.
+ * Out-of-range player is UB.
  */
-uint8_t input_get_pressed(void) __z88dk_fastcall;
-
-/** Sets active input mode (keyboard, joystick, or both). */
-void input_set_mode(InputMode mode) __z88dk_fastcall;
-
-/** Selects joystick backend used when joystick input is enabled. */
-void input_set_joystick_type(InputJoystickType joystick_type) __z88dk_fastcall;
+uint8_t input_get_pressed(uint8_t player) __z88dk_fastcall;
 
 /**
- * Sets keyboard scancodes for all actions from the given struct.
- * Also keeps the keyboard-as-joystick bindings in sync.
+ * Restores the given player to its default bindings (shared between players),
+ * mode (KEYBOARD_ONLY), and per-player default joystick type. Call once per
+ * player from the owning scene's init. The default joysticks are P0=KEMPSTON,
+ * P1=SINCLAIR2; the keyboard bindings are shared (left=5, right=8, up=7,
+ * down=6, fire1=SPACE).
  */
-void input_set_keyboard_bindings(const InputBindings *bindings) __z88dk_fastcall;
+void input_reset_defaults(uint8_t player) __z88dk_fastcall;
 
-/** Restores default mode, joystick type and keyboard bindings. */
-void input_reset_defaults(void) __z88dk_fastcall;
+/**
+ * Returns 1 if the given scancode is currently pressed per keyboard_cache,
+ * 0 otherwise. Mirrors z88dk asm_in_key_pressed bit-for-bit; zero port I/O.
+ * Useful for reading arbitrary system keys (pause, menu, etc.) without
+ * re-touching hardware.
+ */
+uint8_t input_keyboard_pressed(uint16_t scancode) __z88dk_fastcall;
+
+/**
+ * Sets which input sources are evaluated each frame for the given player.
+ * Two args; uses default callee convention (NOT fastcall).
+ */
+void input_set_mode(uint8_t player, InputMode mode);
+
+/**
+ * Selects the joystick backend used when joystick input is enabled for the
+ * given player. Two args; default callee convention.
+ */
+void input_set_joystick_type(uint8_t player, InputJoystickType joystick_type);
+
+/**
+ * Sets keyboard scancodes for all actions for the given player from the
+ * given struct. Pointer-passed because the 10-B struct must never cross a
+ * call boundary by value on the ~128 B stack budget.
+ */
+void input_set_keyboard_bindings(uint8_t player, const InputBindings *bindings);
 
 #endif // __CORE_INPUT_INPUT_MANAGER_H__

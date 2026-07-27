@@ -1,8 +1,10 @@
 {
     "name": "gamewatch-template",
     "image": "dgzornoza/zxide-dev:latest",
+    "containerUser": "vscode",
     "runArgs": [
         "--name=${localWorkspaceFolderBasename}",
+        "--user=vscode",
 		"--add-host=host.docker.internal:host-gateway"
     ],
     "customizations": {

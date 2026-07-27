@@ -12,6 +12,12 @@
 - **Build:** Makefile-based. See `.ai/README.md` for the canonical command.
 - **License:** AGPL-3.0-or-later. Contributions require `CLA.md` and follow `CONTRIBUTING.md`.
 
+## Development environment
+
+All build and tooling runs inside a VS Code **devcontainer** named `zx-ide-templates`. The container ships the full z88dk toolchain (SDCC + `sdcc_iy`), the Spectrum support libraries, and any host utilities required to assemble, link, and produce runnable `.tap` / `.sna` artifacts. Agents MUST execute build, test, and inspection commands from inside the devcontainer (or from a host that mirrors it); do not assume z88dk is available on the bare host. When a task needs to compile, link, disassemble, or otherwise drive the toolchain, treat the devcontainer as the source of truth for the working environment.
+
+The container runs as the **`vscode`** user (UID 1000) via `--user=vscode` in `devcontainer.json`'s `runArgs`. All workspace files are owned by vscode, so any external `docker exec` (without `-u`) inherits that user and writes files as vscode. Use `-u root` only for system-level operations like `apt-get`. Rebuild the devcontainer (`Dev Containers: Rebuild Container`) after editing `.devcontainer/devcontainer.json` for changes to take effect.
+
 ## Hard constraints
 
 These constraints are non-negotiable for any code change in this repo. They mirror the rules under `.ai/rules/`.
@@ -39,6 +45,7 @@ Skills are workflow templates under `.ai/skills/<name>/SKILL.md`. Load the skill
 | `z88dk-c-coding-conventions` | Writing or refactoring C code for z88dk (style + hotpath optimization). |
 | `z88dk-im2-setup` | Creating or refactoring IM2 interrupt setup, with or without SP1. |
 | `z88dk-sp1-codegen` | Implementing SP1 sprites, tiles, collisions, render loops, performance patterns. |
+| `zxide-framework` | Adding, modifying, or auditing framework-level configuration (`definitions.h`, compile-time flags, per-template constants, player identifiers). |
 
 Priority order when multiple skills apply: `scene-entity-architecture` first, then the relevant creation skill, then `z88dk-im2-setup` / `z88dk-sp1-codegen`, then `z88dk-c-coding-conventions` for style passes.
 

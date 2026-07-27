@@ -16,8 +16,9 @@ static uint8_t player_x = PLAYER_INITIAL_X;
 static uint8_t player_y = PLAYER_INITIAL_Y;
 static const struct sp1_Rect player_clip = {0, 0, 32, 24};
 
-void player_init(void)
+void player_init(uint8_t player_id) __z88dk_fastcall
 {
+    (void)player_id; // not used currently
     player_sprite = sp1_CreateSpr(SP1_DRAW_LOAD1LB, SP1_TYPE_1BYTE, 3, (int)sprites_player_spritesheet_ship_base, 0);
     sp1_AddColSpr(player_sprite, SP1_DRAW_LOAD1RB, SP1_TYPE_1BYTE, 0, 0);
 
@@ -25,9 +26,9 @@ void player_init(void)
     player_y = PLAYER_INITIAL_Y;
 }
 
-void player_update(void)
+void player_update(uint8_t player_id) __z88dk_fastcall
 {
-    const uint8_t pressed = input_get_pressed();
+    const uint8_t pressed = input_get_pressed(player_id);
 
     if ((pressed & INPUT_FLAG_LEFT) && player_x > PLAYER_MIN_X)
     {
@@ -50,7 +51,8 @@ void player_update(void)
     }
 }
 
-void player_render(void)
+void player_render(uint8_t player_id) __z88dk_fastcall
 {
+    (void)player_id; /* single-instance sprite pool */
     sp1_MoveSprPix(player_sprite, (struct sp1_Rect *)&player_clip, 0, player_x, player_y);
 }
