@@ -32,8 +32,8 @@
  */
 typedef enum
 {
-    PLAYER_1 = 0
-    // define more player if needed ...
+    PLAYER_1 = 0,
+    PLAYER_2 = 1
 } PlayerId;
 
 #endif // __CORE_GAME_DEFINITIONS_H__

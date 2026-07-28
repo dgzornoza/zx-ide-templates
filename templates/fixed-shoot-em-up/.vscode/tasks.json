@@ -17,7 +17,7 @@
                 "C_OPT_FLAGS=-SO3 --opt-code-size",
                 "LINKER_FLAGS=",
                 "CREATE_SNA=true",
-                "CREATE_TAP=false"
+                "CREATE_TAP=true"
             ],
             "problemMatcher": [
                 {

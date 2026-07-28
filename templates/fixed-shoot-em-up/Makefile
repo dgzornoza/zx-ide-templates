@@ -1,3 +1,5 @@
+# https://www.z88dk.org/wiki/doku.php?id=platform:zx
+
 # Name of final file (without the extension)
 EXEC_OUTPUT=fixed-shoot-em-up
 
@@ -80,7 +82,7 @@ $(EXEC) : $(OBJECT_SOURCES)
 
 ifeq ($(CREATE_TAP),true)
 	@echo "\nGenerating .tap file..."
-	$(TOOLCHAIN) $(LDFLAGS) $(CRT_FLAG) $(OBJECT_SOURCES) -o $(OUT_DIR)/$(EXEC_OUTPUT).bin -create-app
+	$(TOOLCHAIN) $(LDFLAGS) $(CRT_FLAG) $(OBJECT_SOURCES) -o $(OUT_DIR)/$(EXEC_OUTPUT).bin -create-app -Cz"--screen ./assets/load-screen.scr"
 	@echo ".tap file generated: $(OUT_DIR)/$(EXEC_OUTPUT).tap"
 endif
 
