@@ -9,7 +9,14 @@
 
 // --- ASCII SPACE (32 - 127) ---
 // Reomended use ASCII indexes directly to easily print text.
-#define TILE_FONT_NUMBERS_BASE '0' // = 48 (Occupies 48 to 57) (0-9 digits)
+#define TILE_FONT_START ' '       // = 32 start font pointer
+#define TILE_FONT_LEN 127u - 32u  // font tiles (32 to 127)
+#define TILE_FONT_NUMBERS '0'     // = 48 start numbers
+#define TILE_FONT_NUMBERS_LEN 10u // 10 digits
+#define TILE_FONT_UPPER 'A'       // = 65 start upercase letters
+#define TILE_FONT_UPPER_LEN 26u   // 26 letters
+#define TILE_FONT_LOWER 'a'       // = 97 start lowercase letters
+#define TILE_FONT_LOWER_LEN 26u   // 26 letters
 
 // --- CUSTOM / TILESET SPACE (128 - 255) ---
 // Add here the identifiers for your backgrounds, HUD, etc.

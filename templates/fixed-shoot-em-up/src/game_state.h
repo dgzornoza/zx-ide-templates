@@ -6,6 +6,7 @@
 // Define possible game states
 typedef enum
 {
+    STATE_SPLASH,
     STATE_MENU,
     STATE_PLAYING,
     STATE_GAME_OVER
@@ -15,8 +16,5 @@ typedef enum
 extern GameState game_state;
 extern uint16_t game_score;
 extern uint8_t game_lives;
-
-// Initialize state for a new game
-void game_state_init(void);
 
 #endif // __GAME_STATE_H__

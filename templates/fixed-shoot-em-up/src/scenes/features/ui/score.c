@@ -1,7 +1,7 @@
 #include "score.h"
 #include "../../../z88dk_headers.h"
 #include "tile_registry.h"
-#include "../../../data/fonts/numbers.h"
+#include "../../../data/fonts/font_1.h"
 #include "../../../game_state.h"
 
 // Position and format configuration
@@ -16,9 +16,9 @@ void score_init(void)
 {
     // Load the font bitmaps (10 digit tiles) into SP1 graphics memory
     // Mapping digits 0-9 linearly starting from ASCII '0' -> ('0'+0, '0'+1...)
-    for (uint8_t i = 0; i < 10; i++)
+    for (uint8_t i = 0; i < TILE_FONT_NUMBERS_LEN; i++)
     {
-        sp1_TileEntry(TILE_FONT_NUMBERS_BASE + i, (uint8_t *)numbers + (i * 8));
+        sp1_TileEntry(TILE_FONT_NUMBERS + i, (uint8_t *)font_1 + (i * 8));
     }
 }
 
@@ -34,7 +34,7 @@ void score_render(void)
         {
             uint8_t digit = temp_score % 10;
             temp_score /= 10;
-            sp1_PrintAtInv(SCORE_Y_POS, SCORE_X_POS + i, INK_WHITE | PAPER_BLACK, TILE_FONT_NUMBERS_BASE + digit);
+            sp1_PrintAtInv(SCORE_Y_POS, SCORE_X_POS + i, INK_WHITE | PAPER_BLACK, TILE_FONT_NUMBERS + digit);
         }
 
         last_drawn_score = game_score;

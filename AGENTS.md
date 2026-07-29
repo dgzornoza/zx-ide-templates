@@ -18,6 +18,23 @@ All build and tooling runs inside a VS Code **devcontainer** named `zx-ide-templ
 
 The container runs as the **`vscode`** user (UID 1000) via `--user=vscode` in `devcontainer.json`'s `runArgs`. All workspace files are owned by vscode, so any external `docker exec` (without `-u`) inherits that user and writes files as vscode. Use `-u root` only for system-level operations like `apt-get`. Rebuild the devcontainer (`Dev Containers: Rebuild Container`) after editing `.devcontainer/devcontainer.json` for changes to take effect.
 
+### Running toolchain commands from the host (Dev Containers CLI)
+
+When the Dev Containers CLI (`@devcontainers/cli`) is installed on the host and the devcontainer has been built once, agents can drive the toolchain without opening VS Code. From a host shell:
+
+```bash
+devcontainer exec --workspace-folder "<repo-root>" \
+  bash -c "cd /workspaces/zx-ide-templates/templates/fixed-shoot-em-up && \
+           make COMPILER=sdcc CLIB=sdcc_iy CRT=31 \
+                'C_OPT_FLAGS=-SO3 --opt-code-size' \
+                LINKER_FLAGS= \
+                CREATE_SNA=true CREATE_TAP=true"
+```
+
+`<repo-root>` is the absolute path to the local checkout (parent of `.devcontainer/`). The container-side path `/workspaces/zx-ide-templates/...` is the standard devcontainer mount path. Output: `bin/fixed-shoot-em-up.tap` and `bin/fixed-shoot-em-up.sna` under the template folder.
+
+This is the preferred path for AI agents that need to verify build correctness without an interactive VS Code session: it runs the canonical Makefile inside the same toolchain the project ships, without needing z88dk installed on the host. Use this whenever a task needs empirical build evidence — never trust static analysis alone for code that has to link against a real toolchain.
+
 ## Hard constraints
 
 These constraints are non-negotiable for any code change in this repo. They mirror the rules under `.ai/rules/`.
