@@ -25,7 +25,7 @@ Follow:
 ## Procedure
 
 1. Create or update scene module directly under `src/scenes/`.
-2. Expose `<scene>_init(void)`, `<scene>_update(void)`, `<scene>_render(void)` only if needed by orchestrator.
+2. Expose `<scene>_init(void)` and `<scene>_update(void)` by default. Add `<scene>_render(void)` ONLY when the scene owns a per-frame ordering decision that the orchestrator cannot make. When in doubt, omit it.
 3. Keep scene responsible for local interaction state and transition flags.
 4. If UI elements are reusable across scenes, place them in `src/scenes/features/ui/` and call them from this scene.
 5. Keep rendering differential and avoid calling `sp1_UpdateNow()` here.

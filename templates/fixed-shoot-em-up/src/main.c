@@ -47,7 +47,6 @@ int main(void)
         {
         case STATE_SPLASH:
             splash_scene_update();
-            // splash_scene_render(); // not required currently
             break;
         case STATE_PLAYING:
             if (!level1_inited)
@@ -56,7 +55,6 @@ int main(void)
                 level1_inited = 1u;
             }
             level1_scene_update();
-            level1_scene_render();
             break;
         case STATE_MENU:
             /* Halt placeholder until the main menu scene lands. */

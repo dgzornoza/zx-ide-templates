@@ -50,18 +50,14 @@ void splash_scene_init(void)
 
 void splash_scene_update(void)
 {
-    /* Rising-edge keypress detection. in_inkey() returns 0 when no key is
-     * pressed and non-zero when any key is pressed; normalize to 0/1. */
+    /* wait to keypress detection to change to menu state.
+     * in_inkey() returns 0 when no key is
+     * pressed and non-zero when any key is pressed; normalize to 0/1.
+     */
     uint8_t cur = in_inkey() ? 1u : 0u;
-
     if (prev_key == 0u && cur != 0u)
     {
         game_state = STATE_MENU;
     }
     prev_key = cur;
-}
-
-void splash_scene_render(void)
-{
-    /* No-op. sp1_UpdateNow() lives in main.c's central loop. */
 }

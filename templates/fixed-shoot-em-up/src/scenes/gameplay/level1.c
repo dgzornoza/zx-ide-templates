@@ -22,17 +22,18 @@ void level1_scene_update(void)
      *   1. input snapshot (exactly once per frame)
      *   2. input poll (per-player, zero port I/O after snapshot)
      *   3. player update
-     * The single sp1_UpdateNow() per frame stays in main.c. */
+     *   4. dirty-marker phase: player_render + score_render register changes
+     *      on the SP1 update list. The single sp1_UpdateNow() per frame
+     *      flushes the list from main.c.
+     * The scene exposes no separate _render callback because no ordering
+     * decision between layers is required: player sprite and score widget
+     * occupy disjoint screen regions. */
     input_keyboard_snapshot();
     input_poll(PLAYER_1);
 #if ALLOWED_GAME_PLAYERS >= 2
     input_poll(PLAYER_2);
 #endif
     player_update(PLAYER_1);
-}
-
-void level1_scene_render(void)
-{
     player_render(PLAYER_1);
     score_render();
 }
