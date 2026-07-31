@@ -25,9 +25,8 @@ Follow:
 ## Procedure
 
 1. Create scene header and source in `src/scenes/gameplay/`.
-2. Expose `<scene>_init(void)` and `<scene>_update(void)` by default. Add `<scene>_render(void)` ONLY when the scene owns a per-frame ordering decision that the orchestrator cannot make (e.g., layering groups whose SP1 column occlusion order matters). When in doubt, omit it.
-3. When `_render` is omitted, the dirty-marker phase of feature `_render` calls runs at the end of `<scene>_update`, before transition checks.
-4. Wire feature dependencies from:
+2. Expose `<scene>_init(void)` and `<scene>_update(void)`. No `_scene_render` callback.
+3. Wire feature dependencies from:
 
 - `src/scenes/features/entities/`
 - `src/scenes/features/ui/`
@@ -39,11 +38,13 @@ Follow:
 - enemies
 - collisions
 - sound dispatch
-- dirty-marker phase (entity `_render` + UI `_render` calls)
+- UI updates
 - transition checks
 
+Each feature's `_update` handles its own logic + dirty-marker phases internally; ordering BETWEEN features determines SP1 column occlusion - sequence entity and UI update calls accordingly.
+
 5. Call feature resets before scene transitions when required.
-6. Keep render differential and never flush (`sp1_UpdateNow`) inside scene module.
+6. Keep dirty-marker differential and never flush (`sp1_UpdateNow`) inside scene module.
 
 ## Output
 

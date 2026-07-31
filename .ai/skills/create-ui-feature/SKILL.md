@@ -27,9 +27,8 @@ Follow:
 1. Create `<ui_feature>.h/.c` under `src/scenes/features/ui/`.
 2. Expose only callbacks required by owning scenes:
 
-- `<ui_feature>_init(void)`
-- `<ui_feature>_update(void)` if dynamic
-- `<ui_feature>_render(void)`
+- `<ui_feature>_init(void)` - one-shot setup (e.g., `sp1_TileEntry` registrations, static asset load).
+- `<ui_feature>_update(void)` - per-frame tick. The function MUST register its SP1 dirty-marks here (e.g., `sp1_PrintAt*` for state-driven widgets). Gate the dirty-marker work by a state-change check when the widget is mostly static - this keeps the SP1 update list small without introducing a separate `_render` callback.
 
 3. Keep UI state file-local with `static` variables.
 4. Read shared data from `game_state.h` for score/lives/scene values.

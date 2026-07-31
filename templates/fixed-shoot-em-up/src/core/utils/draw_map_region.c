@@ -26,7 +26,7 @@ static void draw_map(void)
     // map_y_offset must be local: it is the outer loop counter (incremented each iteration).
     // All other config fields are accessed directly from draw_map_config:
     //   direct global addressing = ld a,(_sym+n) = 13 T-states
-    //   stack-frame local         = ld a,(ix-n)   = 19 T-states  (+6 per access)
+    //   stack-frame local        = ld a,(ix-n)   = 19 T-states  (+6 per access)
     const uint8_t *tiles_map = config.tiles_map;
 
     for (uint8_t map_y_offset = config.map_y_offset; map_y_offset < config.map_height; map_y_offset++)

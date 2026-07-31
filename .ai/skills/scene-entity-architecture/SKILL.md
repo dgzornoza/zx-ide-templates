@@ -48,17 +48,20 @@ Evaluate decisions strictly in order `1 -> 2 -> 3 -> 4`. Each decision narrows c
 
 4. Lifecycle and update-order decision:
 
-- Default scene lifecycle is `init` + `update` only. `_scene_render` is NOT a required scene callback on this template.
-- A scene exposes `_render` ONLY when it owns an ordering decision that the orchestrator cannot make — e.g., multiple sprite groups whose dirty-marker order affects SP1 column occlusion. Most scenes do not.
-- When a scene does not need `_render`, omit the declaration and implementation; the orchestrator must not call it.
-- Fixed gameplay update order (inside `_update`):
+- Unified lifecycle across all module types: `_init` + `_update` only. No `_render` callback at scene, entity, or UI level on this template.
+- A feature's `_update` is a per-frame tick with two possible phases in this order:
+	1. logic - advance state (movement, AI, transitions)
+	2. dirty-marker - register changes on the SP1 update list via `sp1_MoveSprPix` / `sp1_PrintAt*` / `draw_map_*`
+- When a feature has no per-frame work of either phase, omit `_update` and the orchestrator must not call it.
+- Scene update order (inside `<scene>_update`):
 	1. input
-	2. player
-	3. enemies
+	2. player (logic + dirty-marker)
+	3. enemies (logic + dirty-marker)
 	4. collisions
 	5. sound dispatch
-	6. dirty-marker phase (entity `_render` + UI `_render` calls)
+	6. UI updates (logic + dirty-marker per UI feature)
 	7. transition checks
+- Ordering between phases is local to each feature's `_update`. Ordering BETWEEN features (which sprite occludes which on SP1 column overlap) is the scene's job — sequence the entity/UI update calls inside `<scene>_update` accordingly.
 - Before any scene transition, call `<entity>_reset(void)` for every entity type that uses a fixed-size pool (2 or more simultaneous instances).
 
 
@@ -66,8 +69,7 @@ Evaluate decisions strictly in order `1 -> 2 -> 3 -> 4`. Each decision narrows c
 
 This section defines architecture decision outputs; detailed implementation stays in the specialized creation skill selected later.
 
-- Scene lifecycle default: `_init` + `_update`. Do not add `_render` to a scene unless the scene has its own per-frame ordering decision.
-- Entity and UI feature lifecycle (`_init` / `_update` / `_render`) stays as documented in `create-entity-feature` and `create-ui-feature`. The render-as-optional rule above applies at the SCENE level, not inside entities or UI features, where render is the only mechanism that registers SP1 dirty-marks.
+- Unified lifecycle across scenes, entities, and UI features: `_init` + `_update`. No `_render`.
 - Expose only callbacks consumed by the owning orchestrator. This router does not define concrete function signatures for scene/entity/UI modules; the selected specialized skill defines exact API shapes.
 - If a module does not need one lifecycle step and that callback is not called by its orchestrator, omit the declaration and implementation.
 - Avoid mandatory no-op callbacks by default in 8-bit targets because each extra symbol and call site increases code size and frame cost.
@@ -78,7 +80,7 @@ This section defines architecture decision outputs; detailed implementation stay
 
 - Entity modules must live in `src/scenes/features/entities/`.
 - UI feature modules must live in `src/scenes/features/ui/`.
-- Each active gameplay entity must expose the lifecycle callbacks that are actually consumed by the scene orchestrator (typically `init`, `update`, and `render` for playable actors).
+- Each active gameplay entity exposes `_init` + `_update`. `_update` does the logic phase AND the SP1 dirty-marker phase internally; no separate `_render`.
 - Reset decision table:
   1. If an entity uses a fixed-size pool (2 or more simultaneous instances), include `<entity>_reset(void)`.
   2. If an entity is single-instance and initialized once per run, omit `<entity>_reset(void)`.

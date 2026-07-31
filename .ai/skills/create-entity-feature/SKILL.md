@@ -27,8 +27,7 @@ Follow architecture and platform constraints from instructions:
 1. Create `<entity>.h` in `src/scenes/features/entities/` and expose only callbacks used by the owning scene:
 
 - `<entity>_init(void)`
-- `<entity>_update(void)`
-- `<entity>_render(void)`
+- `<entity>_update(void)` - per-frame tick: logic phase (input/state advance) followed by dirty-marker phase (SP1 update-list calls). Do not split render into a separate callback.
 - `<entity>_reset(void)` only when multi-instance or level reset requires it
 
 2. Create `<entity>.c` in `src/scenes/features/entities/` with file-local `static` state.
@@ -40,9 +39,9 @@ Follow architecture and platform constraints from instructions:
 
 4. Read shared run-level data from `game_state.h` when needed; do not pass large state objects through APIs.
 
-5. Integrate callback calls in the owning gameplay scene under `src/scenes/gameplay/` following required update order.
+5. Integrate callback calls in the owning gameplay scene under `src/scenes/gameplay/` following required update order. Ordering between entity `_update` calls inside the scene determines SP1 column occlusion - sequence accordingly.
 
-6. Keep rendering differential; do not call `sp1_UpdateNow()` from the entity module.
+6. Keep dirty-marker phase differential; do not call `sp1_UpdateNow()` from the entity module.
 
 ## Output
 

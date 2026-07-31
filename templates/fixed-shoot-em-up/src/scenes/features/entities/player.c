@@ -28,6 +28,11 @@ void player_init(uint8_t player_id) __z88dk_fastcall
 
 void player_update(uint8_t player_id) __z88dk_fastcall
 {
+    /* Per-frame tick for a player entity. Two phases, in this order:
+     *   1. logic  - read input, advance position
+     *   2. dirty-marker - sp1_MoveSprPix updates the SP1 update list so
+     *      sp1_UpdateNow() (central loop) repaints the sprite this frame.
+     * No separate _render callback; ordering between phases is local. */
     const uint8_t pressed = input_get_pressed(player_id);
 
     if ((pressed & INPUT_FLAG_LEFT) && player_x > PLAYER_MIN_X)
@@ -49,10 +54,6 @@ void player_update(uint8_t player_id) __z88dk_fastcall
     {
         player_y += PLAYER_SPEED_PIXELS;
     }
-}
 
-void player_render(uint8_t player_id) __z88dk_fastcall
-{
-    (void)player_id; /* single-instance sprite pool */
     sp1_MoveSprPix(player_sprite, (struct sp1_Rect *)&player_clip, 0, player_x, player_y);
 }

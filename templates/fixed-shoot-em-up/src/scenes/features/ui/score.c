@@ -12,7 +12,7 @@
 // Internal memory for tracking changes
 static uint16_t last_drawn_score = 0xFFFF; // Impossible by default, forces initial draw
 
-void score_init(void)
+void score_init(void) __z88dk_fastcall
 {
     // Load the font bitmaps (10 digit tiles) into SP1 graphics memory
     // Mapping digits 0-9 linearly starting from ASCII '0' -> ('0'+0, '0'+1...)
@@ -22,7 +22,7 @@ void score_init(void)
     }
 }
 
-void score_render(void)
+void score_update(void) __z88dk_fastcall
 {
     // Check if is playing and the score is different from the last drawn score to avoid unnecessary redraws
     if (game_state == STATE_PLAYING && game_score != last_drawn_score)

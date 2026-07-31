@@ -29,8 +29,9 @@
  * satisfying the very first poll because cur is never 0xFFu (only 0 or 1). */
 static uint8_t prev_key = 0xFFu;
 
-void splash_scene_init(void)
+void splash_scene_init(void) __z88dk_fastcall
 {
+
     /* Register the font_1 ASCII range. Tile IDs are ASCII-aligned per
      * TILE_FONT_BASE = ' '; each glyph is 8 bytes at font_1 + (c - 32) * 8. */
     for (uint8_t i = 0; i < TILE_FONT_LEN; i++)
@@ -48,7 +49,7 @@ void splash_scene_init(void)
     }
 }
 
-void splash_scene_update(void)
+void splash_scene_update(void) __z88dk_fastcall
 {
     /* wait to keypress detection to change to menu state.
      * in_inkey() returns 0 when no key is
