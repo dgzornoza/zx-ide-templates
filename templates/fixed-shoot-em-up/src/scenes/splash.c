@@ -53,7 +53,7 @@ void splash_scene_update(void) __z88dk_fastcall
 {
     /* wait to keypress detection to change to menu state.
      * in_inkey() returns 0 when no key is
-     * pressed and non-zero when any key is pressed; normalize to 0/1.
+     * pressed and non-zero when any key is pressed, normalize to 0/1.
      */
     uint8_t cur = in_inkey() ? 1u : 0u;
     if (prev_key == 0u && cur != 0u)
