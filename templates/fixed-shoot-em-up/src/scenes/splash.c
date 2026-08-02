@@ -18,6 +18,7 @@
 #include "features/ui/tile_registry.h"
 #include "../data/fonts/font_1.h"
 #include "../game_state.h"
+#include "../core/utils/draw_string_tiles.h"
 
 /* "PULSA UNA TECLA" = 15 chars, centred on the 32-column Spectrum display. */
 #define PROMPT_TEXT "PULSA UNA TECLA"
@@ -41,12 +42,7 @@ void splash_scene_init(void) __z88dk_fastcall
 
     /* Print the prompt on row 20 with the FLASH attribute bit so the ULA
      * toggles INK/PAPER automatically at ~2 Hz - zero per-frame CPU work. */
-    for (uint8_t i = 0u; i < PROMPT_LEN; ++i)
-    {
-        sp1_PrintAtInv(PROMPT_ROW, (uint8_t)(PROMPT_COL + i),
-                       INK_WHITE | PAPER_BLACK | FLASH,
-                       (uint8_t)PROMPT_TEXT[i]);
-    }
+    draw_string_tiles(PROMPT_ROW, PROMPT_COL, INK_WHITE | PAPER_BLACK | FLASH, PROMPT_TEXT);
 }
 
 void splash_scene_update(void) __z88dk_fastcall
