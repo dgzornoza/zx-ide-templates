@@ -28,7 +28,6 @@ void level1_scene_update(void) __z88dk_fastcall
      * Each feature's update handles its own dirty-marker phase internally;
      * the scene exposes no separate _render callback. The single
      * sp1_UpdateNow() per frame lives in main.c. */
-    input_keyboard_snapshot();
     input_poll(PLAYER_1);
 #if ALLOWED_GAME_PLAYERS >= 2
     input_poll(PLAYER_2);

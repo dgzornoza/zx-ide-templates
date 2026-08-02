@@ -1,5 +1,6 @@
 #include "./z88dk_headers.h"
 #include "core/infrastructure/isr.h"
+#include "core/input/input_manager.h"
 #include "scenes/splash.h"
 #include "scenes/main_menu.h"
 #include "scenes/gameplay/level1.h"
@@ -49,6 +50,8 @@ int main(void)
             intrinsic_halt();
         }
 
+        input_keyboard_snapshot();
+
         /* Dispatch by current game state. */
         switch (game_state)
         {
@@ -63,7 +66,7 @@ int main(void)
             }
             main_menu_scene_update();
             break;
-                        
+
         case STATE_PLAYING:
             if (!level1_inited)
             {

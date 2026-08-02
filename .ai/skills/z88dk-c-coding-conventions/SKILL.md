@@ -274,3 +274,15 @@ When facing a new `__z88dk_fastcall` function in a `.lis`, walk this:
 6. **`ld sp, ix; pop ix; ret`** at the end — mandatory epilogue.
 
 If the prologue does NOT match step 1 (no `push ix`), the function is using `__sdcccall(0)` or `__sdcccall(1)` instead — check the function's attribute, not the prologue shape.
+
+## 11. Commenting Discipline
+
+Comments are noise unless they encode information that the code itself cannot.
+
+**No function comments.** Do not write a comment above or inside a function that rephrases what it does. The function name is the documentation. A reader who needs to know what `menu_redraw_row` does should read the code, not a comment that says "redraws one menu row".
+
+**No file-header blocks.** Do not write a top-of-file comment describing what the module contains, what scene it implements, or what the frame contract is. The includes, the function names, and the skill files are the documentation. File headers become stale the moment the code changes — once a file's behaviour shifts and the header is not updated, the header lies. The code cannot lie; a comment can.
+
+**Only when non-obvious.** Add a comment only when explaining something the code cannot express directly: an architectural invariant that callers rely on, a non-portable Z80 trick, a memory-layout assumption verified by reading the `.lis`, a deliberate deviation from a rule. If a future reader could delete the comment and the code would still make sense, the comment should not exist.
+
+**Style.** When a comment is necessary, keep it to one short line. No multi-paragraph essays inside a function body. English only (see section 2).
