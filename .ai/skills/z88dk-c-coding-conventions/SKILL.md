@@ -283,6 +283,8 @@ Comments are noise unless they encode information that the code itself cannot.
 
 **No file-header blocks.** Do not write a top-of-file comment describing what the module contains, what scene it implements, or what the frame contract is. The includes, the function names, and the skill files are the documentation. File headers become stale the moment the code changes — once a file's behaviour shifts and the header is not updated, the header lies. The code cannot lie; a comment can.
 
+**Short section labels are allowed.** A one-line comment that names a block of related lines is fine — `// copyright`, `// hud`, `// state`, `// entity data`. It groups lines for the reader without explaining what code does. Do not let it grow into a description of the section; if the label needs a sentence to justify itself, it has become a file-header in disguise and belongs removed.
+
 **Only when non-obvious.** Add a comment only when explaining something the code cannot express directly: an architectural invariant that callers rely on, a non-portable Z80 trick, a memory-layout assumption verified by reading the `.lis`, a deliberate deviation from a rule. If a future reader could delete the comment and the code would still make sense, the comment should not exist.
 
 **Style.** When a comment is necessary, keep it to one short line. No multi-paragraph essays inside a function body. English only (see section 2).
