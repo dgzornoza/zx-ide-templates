@@ -14,11 +14,11 @@
 #include <input/input_zx.h>
 #include <intrinsic.h>
 
-#include "../z88dk_headers.h"
-#include "features/ui/tile_registry.h"
-#include "../data/fonts/font_1.h"
-#include "../game_state.h"
-#include "../core/utils/draw_string_tiles.h"
+#include "../../z88dk_headers.h"
+#include "../features/ui/tile_registry.h"
+#include "../../data/fonts/font_1.h"
+#include "../../game_state.h"
+#include "../../core/utils/draw_string_tiles.h"
 
 /* "PULSA UNA TECLA" = 15 chars, centred on the 32-column Spectrum display. */
 #define PROMPT_TEXT "PULSA UNA TECLA"

@@ -2,10 +2,10 @@
 #include <input.h>
 #include <input/input_zx.h>
 
-#include "../z88dk_headers.h"
-#include "../game_state.h"
-#include "../core/input/input_manager.h"
-#include "../core/utils/draw_string_tiles.h"
+#include "../../z88dk_headers.h"
+#include "../../game_state.h"
+#include "../../core/input/input_manager.h"
+#include "../../core/utils/draw_string_tiles.h"
 
 #define MAIN_MENU_START_COL 10u
 
