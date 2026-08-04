@@ -3,8 +3,7 @@
 #include <stdint.h>
 #include <intrinsic.h>
 #include <im2.h>
-
-volatile uint8_t frame_tick = 0;
+#include "timer.h"
 
 // IM2 uses 0xD0 and 0xD1 because the SP1 library places its data
 // structures in the upper RAM area and relocates the stack to 0xD000.
@@ -24,7 +23,7 @@ volatile uint8_t frame_tick = 0;
 /** IM2 ISR, called every 50 ms (50 Hz vertical blank). */
 IM2_DEFINE_ISR(isr)
 {
-    frame_tick++;
+    update_timer();
 }
 
 /** Installs the IM2 ISR and enables interrupts. */

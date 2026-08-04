@@ -327,3 +327,7 @@ Quick reference for input functions used in this project:
 | `in_key_scancode(char)` | `uint16_t in_key_scancode(int c)` | Builds the z88dk scancode for an ASCII char via `in_key_translation_table`. |
 | `in_test_key()` | `int in_test_key(void)` | Non-blocking "any key?" probe. |
 | `in_wait_key()` | `void in_wait_key(void)` | Blocking wait for any key. |
+
+## 13. See Also: C ↔ Assembly Companion Layout
+
+When a header exposes symbols implemented in Z80 assembly (for example ISR-driven services like the project timer), the source-tree layout is mandated by `.ai/rules/project-architecture.md` §5 (C ↔ Z80 Assembly Companion Layout). This skill covers the C side of the boundary (declarations, calling conventions, sdcc symbol mangling); placement, naming, and the companion folder structure live in the rule.

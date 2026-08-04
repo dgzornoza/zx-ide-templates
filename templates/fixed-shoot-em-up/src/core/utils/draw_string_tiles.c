@@ -14,13 +14,13 @@ void draw_string_tiles(uint8_t row, uint8_t col, uint8_t attr, const char *str) 
     }
 
     /* Nothing to do for empty strings or for calls that start past the right edge of the visible screen. */
-    if (len == 0u || col >= SCREEN_CHARS_WIDTH)
+    if (len == 0u || col >= SYS_SCREEN_CHARS_WIDTH)
     {
         return;
     }
 
     /* Clamp the invalidated width to the visible columns */
-    uint8_t max_len = (uint8_t)(SCREEN_CHARS_WIDTH - col);
+    uint8_t max_len = (uint8_t)(SYS_SCREEN_CHARS_WIDTH - col);
     if (len > max_len)
     {
         len = max_len;

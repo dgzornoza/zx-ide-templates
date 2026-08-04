@@ -72,7 +72,7 @@ Rules are mandatory contracts under `.ai/rules/<name>.md`. They take precedence 
 
 | Rule | When it applies |
 |---|---|
-| `project-architecture` | Source-tree hierarchy, scene/feature ownership, lifecycle boundaries, update order. |
+| `project-architecture` | Source-tree hierarchy, scene/feature ownership, lifecycle boundaries, update order, and the C ↔ Z80 assembly companion layout. |
 | `sp1-rendering` | Game loop, SP1 graphics arrays, screen updates, interrupt sync. |
 | `z80-c-architecture` | Writing C code, game logic, entities, state management on Z80. |
 

@@ -1,5 +1,6 @@
 #include "./z88dk_headers.h"
 #include "core/infrastructure/isr.h"
+#include "core/infrastructure/timer.h"
 #include "scenes/scene_dispatcher.h"
 #include <intrinsic.h>
 
@@ -14,8 +15,8 @@ int main(void)
 
     while (1)
     {
-        uint8_t current_tick = frame_tick;
-        while (current_tick == frame_tick)
+        uint16_t current_tick = GLOBAL_TIMER_ABS_TICKS;
+        while (current_tick == GLOBAL_TIMER_ABS_TICKS)
         {
             intrinsic_halt();
         }

@@ -15,13 +15,25 @@
 //   - Framework opt-in flags (FRAMEWORK_USE_*)              → own file when introduced
 // -----------------------------------------------------------------------------
 
-#define SCREEN_WIDTH 256
-#define SCREEN_HEIGHT 192
-#define CHAR_SIZE 8
+// Synchronization contract:
+//   Each #define below has a matching EQU in
+//   src/core/system_definitions.asm. Z80 assembly cannot #include this
+//   header (no preprocessor in the asm toolchain), so the values are
+//   duplicated there as EQU constants and pulled into each consumer .asm.
+//   If you change a value here, update the .asm too; the preprocessor will not catch a mismatch.
+//
+// Scope rule: this header MUST contain ONLY #define constants and
+// pure-C declarations. No executable code, no inline asm, no .asm/.c
+// bodies.
 
-#define SCREEN_CHARS_WIDTH (SCREEN_WIDTH / CHAR_SIZE)
-#define SCREEN_CHARS_WIDTH_BASE_0 (SCREEN_WIDTH / CHAR_SIZE - 1)
-#define SCREEN_CHARS_HEIGHT (SCREEN_HEIGHT / CHAR_SIZE)
-#define SCREEN_CHARS_HEIGHT_BASE_0 (SCREEN_HEIGHT / CHAR_SIZE - 1)
+#define SYS_TICKS_PER_SECOND 50
+#define SYS_SCREEN_WIDTH 256
+#define SYS_SCREEN_HEIGHT 192
+#define SYS_CHAR_SIZE 8
+
+#define SYS_SCREEN_CHARS_WIDTH (SYS_SCREEN_WIDTH / SYS_CHAR_SIZE)
+#define SYS_SCREEN_CHARS_WIDTH_BASE_0 (SYS_SCREEN_WIDTH / SYS_CHAR_SIZE - 1)
+#define SYS_SCREEN_CHARS_HEIGHT (SYS_SCREEN_HEIGHT / SYS_CHAR_SIZE)
+#define SYS_SCREEN_CHARS_HEIGHT_BASE_0 (SYS_SCREEN_HEIGHT / SYS_CHAR_SIZE - 1)
 
 #endif // __CORE_SYSTEM_DEFINITIONS_H__
