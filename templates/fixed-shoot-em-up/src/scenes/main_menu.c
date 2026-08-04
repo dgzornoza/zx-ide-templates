@@ -7,58 +7,57 @@
 #include "../core/input/input_manager.h"
 #include "../core/utils/draw_string_tiles.h"
 
-#define MENU_LEFT_COL 10u
+#define MAIN_MENU_START_COL 10u
 
-#define MENU_LABEL_0 "0 Jugar"
-#define MENU_LABEL_1 "1 Keyboard"
-#define MENU_LABEL_2 "2 Kempston"
-#define MENU_LABEL_3 "3 Sinclair"
-
+// copyright
 #define COPYRIGHT_LABEL_0 "(C) 2026 David Gonzalez"
 #define COPYRIGHT_LABEL_1 "fixed-shoot-em-up"
 #define COPYRIGHT_LABEL_2 "powered by Zx-Ide"
 
-#define MENU_ATTR (INK_WHITE | PAPER_BLACK)
-#define MENU_ATTR_INVERSE (INK_BLACK | PAPER_WHITE)
+#define MAIN_MENU_OPTIONS_COUNT 5u
 
-static const uint8_t menu_option_rows[4] = {4, 7, 9, 11};
-static const char *const menu_option_labels[4] = {
-    MENU_LABEL_0, MENU_LABEL_1, MENU_LABEL_2, MENU_LABEL_3};
+static const uint8_t main_menu_option_rows[MAIN_MENU_OPTIONS_COUNT] = {4, 7, 9, 11, 13};
+static const char *const main_menu_option_labels[MAIN_MENU_OPTIONS_COUNT] = {
+    "0 Jugar", "1 Keyboard", "2 Kempston", "3 Sinclair", "4 Define keys"};
 
-static uint8_t menu_selected = 1;
+// state
+static uint8_t menu_option_selected = 1u;
 
-static void draw_menu_option(uint8_t index) __z88dk_fastcall
+static void draw_main_menu(void) __z88dk_fastcall
 {
-    const uint8_t attr = (index == menu_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
-    draw_string_tiles(menu_option_rows[index], MENU_LEFT_COL, attr, menu_option_labels[index]);
+    zx_cls(PAPER_BLACK);
+
+    for (uint8_t i = 0u; i < MAIN_MENU_OPTIONS_COUNT; i++)
+    {
+        const uint8_t attr = (i == menu_option_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
+        draw_string_tiles(main_menu_option_rows[i], MAIN_MENU_START_COL, attr, main_menu_option_labels[i]);
+    }
+
+    draw_string_tiles(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
+    draw_string_tiles(20, 0, MENU_ATTR, COPYRIGHT_LABEL_1);
+    draw_string_tiles(22, 15, MENU_ATTR, COPYRIGHT_LABEL_2);
 }
 
-static void select_menu_option(uint8_t index) __z88dk_fastcall
+static void select_main_menu_option(uint8_t index) __z88dk_fastcall
 {
-    const uint8_t previous = menu_selected;
-    menu_selected = index;
+    const uint8_t previous = menu_option_selected;
+    menu_option_selected = index;
 
-    if (previous != menu_selected)
+    if (previous == menu_option_selected)
     {
-        draw_menu_option(previous);
-        draw_menu_option(menu_selected);
+        return;
     }
+
+    const uint8_t attr_prev = MENU_ATTR;
+    draw_string_tiles(main_menu_option_rows[previous], MAIN_MENU_START_COL, attr_prev, main_menu_option_labels[previous]);
+    const uint8_t attr_cur = MENU_ATTR_INVERSE;
+    draw_string_tiles(main_menu_option_rows[menu_option_selected], MAIN_MENU_START_COL, attr_cur, main_menu_option_labels[menu_option_selected]);
 }
 
 void main_menu_scene_init(void) __z88dk_fastcall
 {
     zx_border(PAPER_BLACK);
-    zx_cls(PAPER_BLACK);
-
-    for (uint8_t i = 0; i < 4; i++)
-    {
-        draw_menu_option(i);
-    }
-
-    // copyright
-    draw_string_tiles(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
-    draw_string_tiles(20, 0, MENU_ATTR, COPYRIGHT_LABEL_1);
-    draw_string_tiles(22, 15, MENU_ATTR, COPYRIGHT_LABEL_2);
+    draw_main_menu();
 }
 
 void main_menu_scene_update(void) __z88dk_fastcall
@@ -69,14 +68,18 @@ void main_menu_scene_update(void) __z88dk_fastcall
     }
     else if (input_keyboard_pressed(IN_KEY_SCANCODE_1))
     {
-        select_menu_option(1);
+        select_main_menu_option(1);
     }
     else if (input_keyboard_pressed(IN_KEY_SCANCODE_2))
     {
-        select_menu_option(2);
+        select_main_menu_option(2);
     }
     else if (input_keyboard_pressed(IN_KEY_SCANCODE_3))
     {
-        select_menu_option(3);
+        select_main_menu_option(3);
+    }
+    else if (input_keyboard_pressed(IN_KEY_SCANCODE_4))
+    {
+        game_state = STATE_DEFINE_KEYS;
     }
 }

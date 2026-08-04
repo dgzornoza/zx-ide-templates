@@ -8,6 +8,7 @@ typedef enum
 {
     STATE_SPLASH,
     STATE_MENU,
+    STATE_DEFINE_KEYS,
     STATE_PLAYING,
     STATE_GAME_OVER
 } GameState;

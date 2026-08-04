@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+// shared menu attributes
+#define MENU_ATTR (INK_WHITE | PAPER_BLACK)
+#define MENU_ATTR_INVERSE (INK_BLACK | PAPER_WHITE)
+
 /**
  * Draws a NUL-terminated string at (row, col) as a contiguous row of SP1
  * tiles.

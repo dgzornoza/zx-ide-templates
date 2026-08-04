@@ -2,32 +2,20 @@
 #define __CORE_INPUT_INPUT_MANAGER_H__
 
 #include <stdint.h>
-#include "asm/input_keyboard_snapshot.h"
 #include "../game_definitions.h"
-
-/** Selects which input sources are evaluated each frame. */
-typedef enum
-{
-    /** Read only keyboard bindings. */
-    INPUT_MODE_KEYBOARD_ONLY,
-    /** Read only configured joystick device. */
-    INPUT_MODE_JOYSTICK_ONLY,
-    /** Read keyboard and joystick and merge both states. */
-    INPUT_MODE_KEYBOARD_AND_JOYSTICK
-} InputMode;
 
 /** Selects which joystick backend is used by the input manager. */
 typedef enum
 {
+    /** Keyboard */
+    INPUT_KEYBOARD,
     /** Kempston joystick interface. */
     INPUT_JOYSTICK_KEMPSTON,
-    /** Sinclair Interface II, player 1 mapping. */
-    INPUT_JOYSTICK_SINCLAIR1,
-    /** Sinclair Interface II, player 2 mapping. */
-    INPUT_JOYSTICK_SINCLAIR2,
+    /** Sinclair Interface II. */
+    INPUT_JOYSTICK_SINCLAIR,
     /** Fuller joystick interface. */
     INPUT_JOYSTICK_FULLER
-} InputJoystickType;
+} InputType;
 
 /** Bit flags to test an action. */
 typedef enum
@@ -53,57 +41,45 @@ typedef struct
  * Field order is chosen for the hottest ROM access */
 typedef struct
 {
-    InputFlags pressed;              /* offset 0;  1 B; InputFlags bitmask */
-    InputBindings bindings;          /* offset 1;  10 B */
-    InputMode mode;                  /* offset 11; raw InputMode */
-    InputJoystickType joystick_type; /* offset 12; raw InputJoystickType */
+    InputFlags pressed;     /* offset 0;  1 B; InputFlags bitmask */
+    InputBindings bindings; /* offset 1;  10 B */
+    InputType input_type;   /* offset 11; raw InputType */
 } InputPlayerState;
 
 /**
- * Per-player poll: combines the cached keyboard state for that player's
- * bindings with the player's joystick (if mode allows) and updates
- * players[player].pressed. ZERO port I/O after input_keyboard_snapshot()
- * has been called this frame.
+ * Per-player poll: tests each binding against the keyboard
+ * Then stores in player for one frame. This action performs multiples input port read.
+ * It should be called once at the beginning of the main loop
  */
 void input_poll(PlayerId player) __z88dk_fastcall;
 
 /**
- * Returns the InputFlags bitmask for the given player. Read once per frame
- * and AND each flag in your consumer.
+ * Returns the InputFlags bitmask for the given player. (from input_poll)
  */
-uint8_t input_get_pressed(uint8_t player) __z88dk_fastcall;
+uint8_t input_get_pressed(PlayerId player) __z88dk_fastcall;
 
 /**
- * Restores the given player to its default bindings (shared between players),
- * mode (KEYBOARD_ONLY), and per-player default joystick type. Call once per
- * player from the owning scene's init. The default joysticks are P0=KEMPSTON,
- * P1=SINCLAIR2; the keyboard bindings are shared (left=o, right=p, up=q,
- * down=a, fire1=SPACE).
+ * Restores the given player to its default input bindings. Call once per
+ * player from the input menu selection.
+ * Default keyboard bindings are shared (left=o, right=p, up=q, down=a, fire1=SPACE).
  */
-void input_reset_defaults(uint8_t player) __z88dk_fastcall;
+void input_reset_defaults(PlayerId player) __z88dk_fastcall;
 
 /**
- * Returns 1 if the given scancode is currently pressed per keyboard_cache,
- * 0 otherwise. Mirrors z88dk asm_in_key_pressed bit-for-bit, zero port I/O.
- * Useful for reading arbitrary system keys (pause, menu, etc.) without
- * re-touching hardware.
+ * Selects the input type for the given player.
  */
-uint8_t input_keyboard_pressed(uint16_t scancode) __z88dk_fastcall;
+void input_set_input_type(PlayerId player, InputType input_type);
 
 /**
- * Sets which input sources are evaluated each frame for the given player.
- */
-void input_set_mode(uint8_t player, InputMode mode);
-
-/**
- * Selects the joystick backend used when joystick input is enabled for the
- * given player.
- */
-void input_set_joystick_type(uint8_t player, InputJoystickType joystick_type);
-
-/**
+ * Define Keys for player.
  * Sets keyboard scancodes for all actions for the given player from the given struct.
  */
-void input_set_keyboard_bindings(uint8_t player, const InputBindings *bindings);
+void input_set_keyboard_bindings(PlayerId player, const InputBindings *bindings);
+
+/**
+ * Returns 1 if the given scancode is currently pressed, 0 otherwise.
+ * This method performs one input port read.
+ */
+uint8_t input_keyboard_pressed(uint16_t scancode) __z88dk_fastcall;
 
 #endif // __CORE_INPUT_INPUT_MANAGER_H__

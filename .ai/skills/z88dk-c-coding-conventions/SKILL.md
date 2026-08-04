@@ -288,3 +288,42 @@ Comments are noise unless they encode information that the code itself cannot.
 **Only when non-obvious.** Add a comment only when explaining something the code cannot express directly: an architectural invariant that callers rely on, a non-portable Z80 trick, a memory-layout assumption verified by reading the `.lis`, a deliberate deviation from a rule. If a future reader could delete the comment and the code would still make sense, the comment should not exist.
 
 **Style.** When a comment is necessary, keep it to one short line. No multi-paragraph essays inside a function body. English only (see section 2).
+
+## 12. Locating z88dk Library Source for Input/Output Functions
+
+When considering whether to roll your own asm helper (e.g., a keyboard scan, a port read) versus re-using what z88dk already provides, you can inspect the library source directly inside the devcontainer. The library layout is two-tier:
+
+- C wrapper: `libsrc/<clib>/input/<arch>/c/<compiler>/<name>.asm`
+- Real asm:  `libsrc/<clib>/input/<arch>/z80/asm_<name>.asm`
+
+For the current ZX Spectrum project the path is:
+
+```text
+/opt/z88dk/libsrc/newlib/input/zx/z80/asm_in_inkey.asm
+/opt/z88dk/libsrc/newlib/input/zx/z80/asm_in_key_pressed.asm
+/opt/z88dk/libsrc/newlib/input/zx/z80/asm_in_key_scancode.asm
+```
+
+The C-side wrapper at `/opt/z88dk/libsrc/newlib/input/zx/c/sdcc_ix/in_inkey.asm` is just a 4-line stub:
+
+```asm
+SECTION code_clib
+SECTION code_input
+PUBLIC _in_inkey
+EXTERN asm_in_inkey
+defc _in_inkey = asm_in_inkey
+```
+
+So the real implementation lives in `asm_in_inkey.asm`. Reading it before re-implementing is mandatory: it shows whether the library already filters CAPS/SYMBOL SHIFT (it does), whether it caches the keyboard matrix (it does not — every call does 8 port reads), and how it builds the scancode.
+
+If the library already provides what you need at acceptable cost, prefer linking it. If you need to roll your own (e.g., to keep the "one snapshot per frame" contract that the current project enforces), place the helper next to its producer (asm module + paired header) and keep the internal tables file-private, as documented in this skill.
+
+Quick reference for input functions used in this project:
+
+| Function | Signature | Notes |
+|---|---|---|
+| `in_inkey()` | `int in_inkey(void)` | Returns ASCII char of the single pressed key, `0` if none, with carry set on multi-key. Does its own 8-row sweep every call. |
+| `in_key_pressed(scancode)` | `int in_key_pressed(uint16_t scancode)` | Reads the row selector from the scancode, masks with the bit mask. Returns non-zero if pressed. |
+| `in_key_scancode(char)` | `uint16_t in_key_scancode(int c)` | Builds the z88dk scancode for an ASCII char via `in_key_translation_table`. |
+| `in_test_key()` | `int in_test_key(void)` | Non-blocking "any key?" probe. |
+| `in_wait_key()` | `void in_wait_key(void)` | Blocking wait for any key. |

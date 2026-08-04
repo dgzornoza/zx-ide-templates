@@ -3,6 +3,7 @@
 #include "core/input/input_manager.h"
 #include "scenes/splash.h"
 #include "scenes/main_menu.h"
+#include "scenes/define_keys_menu.h"
 #include "scenes/gameplay/level1.h"
 #include "game_state.h"
 #include "scenes/features/ui/hud.h"
@@ -12,15 +13,10 @@
 
 const struct sp1_Rect game_area = {0, 0, 32, 24};
 
-/* One-shot flag so level1_scene_init() runs only on first STATE_PLAYING entry.
- * File-local: only the central loop in main() inspects it. */
+/* One-shot flags so _init() function runs only on first entry. */
 static uint8_t level1_inited = 0u;
-
-/* One-shot flag so main_menu_scene_init() runs only on first STATE_MENU
- * entry. Same pattern as level1_inited: a fresh state-in from splash
- * triggers exactly one init, then update() takes over until the scene
- * transitions out (e.g. game_state = STATE_PLAYING on '0 JUGAR'). */
 static uint8_t main_menu_inited = 0u;
+static uint8_t define_keys_menu_inited = 0u;
 
 /** Main app entry point */
 int main(void)
@@ -35,7 +31,7 @@ int main(void)
     // sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL, INK_WHITE | PAPER_BLACK, ' ');
     sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL | SP1_IFLAG_OVERWRITE_TILES | SP1_IFLAG_OVERWRITE_DFILE, INK_WHITE | PAPER_BLACK, ' ');
 
-    /* One-shot splash setup (registers font_1 tiles, prints the prompt).
+    /* One-shot splash setup.
      * No sp1_Invalidate here - would mark cells dirty without attached
      * structs and clobber the loaded art. */
     splash_scene_init();
@@ -50,8 +46,6 @@ int main(void)
             intrinsic_halt();
         }
 
-        input_keyboard_snapshot();
-
         /* Dispatch by current game state. */
         switch (game_state)
         {
@@ -59,12 +53,29 @@ int main(void)
             splash_scene_update();
             break;
         case STATE_MENU:
+            /* Coming back from define keys: drop both _inited flags so the
+             * main menu redraws on entry and the next define-keys visit
+             * starts from a clean state. */
+            if (define_keys_menu_inited)
+            {
+                define_keys_menu_inited = 0u;
+                main_menu_inited = 0u;
+            }
             if (!main_menu_inited)
             {
                 main_menu_scene_init();
                 main_menu_inited = 1u;
             }
             main_menu_scene_update();
+            break;
+
+        case STATE_DEFINE_KEYS:
+            if (!define_keys_menu_inited)
+            {
+                define_keys_menu_scene_init();
+                define_keys_menu_inited = 1u;
+            }
+            define_keys_menu_scene_update();
             break;
 
         case STATE_PLAYING:
