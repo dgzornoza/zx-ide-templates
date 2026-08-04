@@ -55,55 +55,73 @@ void input_poll(PlayerId playerId) __z88dk_fastcall
 {
     uint8_t flags = 0;
 
-    // Keyboard
     if (players[playerId].input_type == INPUT_KEYBOARD)
     {
         const InputBindings *bindings = &players[playerId].bindings;
+#if (GAME_USED_KEYS & GAME_KEY_LEFT_BIT)
         if (in_key_pressed(bindings->left))
         {
             flags |= INPUT_FLAG_LEFT;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_RIGHT_BIT)
         if (in_key_pressed(bindings->right))
         {
             flags |= INPUT_FLAG_RIGHT;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_UP_BIT)
         if (in_key_pressed(bindings->up))
         {
             flags |= INPUT_FLAG_UP;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_DOWN_BIT)
         if (in_key_pressed(bindings->down))
         {
             flags |= INPUT_FLAG_DOWN;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_FIRE1_BIT)
         if (in_key_pressed(bindings->fire1))
         {
             flags |= INPUT_FLAG_FIRE1;
         }
+#endif
     }
-    // joystick
     else
     {
         const uint16_t joystick_state = read_joystick_state(playerId);
+#if (GAME_USED_KEYS & GAME_KEY_LEFT_BIT)
         if (joystick_state & IN_STICK_LEFT)
         {
             flags |= INPUT_FLAG_LEFT;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_RIGHT_BIT)
         if (joystick_state & IN_STICK_RIGHT)
         {
             flags |= INPUT_FLAG_RIGHT;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_UP_BIT)
         if (joystick_state & IN_STICK_UP)
         {
             flags |= INPUT_FLAG_UP;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_DOWN_BIT)
         if (joystick_state & IN_STICK_DOWN)
         {
             flags |= INPUT_FLAG_DOWN;
         }
+#endif
+#if (GAME_USED_KEYS & GAME_KEY_FIRE1_BIT)
         if (joystick_state & IN_STICK_FIRE)
         {
             flags |= INPUT_FLAG_FIRE1;
         }
+#endif
     }
 
     players[playerId].pressed = flags;

@@ -27,6 +27,26 @@
 #endif
 
 /**
+ * Compile-time bitmask of which input actions are emitted into input_poll.
+ * Bit positions are exposed as GAME_KEY_*_BIT macros so the preprocessor
+ * can AND them at translation time (sdcc does not expand enum members
+ * inside #if). The macros mirror the InputFlags enum in
+ * core/input/input_manager.h; both must stay in lockstep.
+ * Default keeps every action live. Apps override BEFORE any core include
+ * to slim down the compiled input_poll, e.g.:
+ *   #define GAME_USED_KEYS (GAME_KEY_LEFT_BIT | GAME_KEY_RIGHT_BIT | GAME_KEY_FIRE1_BIT)
+ */
+#define GAME_KEY_LEFT_BIT (1u << 0)
+#define GAME_KEY_RIGHT_BIT (1u << 1)
+#define GAME_KEY_UP_BIT (1u << 2)
+#define GAME_KEY_DOWN_BIT (1u << 3)
+#define GAME_KEY_FIRE1_BIT (1u << 4)
+
+#ifndef GAME_USED_KEYS
+#define GAME_USED_KEYS (GAME_KEY_LEFT_BIT | GAME_KEY_RIGHT_BIT | GAME_KEY_UP_BIT | GAME_KEY_DOWN_BIT | GAME_KEY_FIRE1_BIT)
+#endif
+
+/**
  * Player identifier type.
  * This is used to identify players in game.
  */
