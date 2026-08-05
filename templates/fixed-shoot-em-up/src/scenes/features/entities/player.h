@@ -10,7 +10,7 @@
  *
  * @param player_id PlayerId (PLAYER_1 or PLAYER_2).
  */
-void player_init(uint8_t player_id) __z88dk_fastcall;
+void player_init(PlayerId player_id) __z88dk_fastcall;
 
 /**
  * Per-frame tick: should reads the player's input flags from the input manager and
@@ -21,6 +21,6 @@ void player_init(uint8_t player_id) __z88dk_fastcall;
  *
  * @param player_id PlayerId (PLAYER_1 or PLAYER_2).
  */
-void player_update(uint8_t player_id) __z88dk_fastcall;
+void player_update(PlayerId player_id) __z88dk_fastcall;
 
 #endif // __SCENES_FEATURES_ENTITIES_PLAYER_H__

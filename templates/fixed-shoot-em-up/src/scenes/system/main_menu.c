@@ -57,6 +57,7 @@ static void select_main_menu_option(uint8_t index) __z88dk_fastcall
 void main_menu_scene_init(void) __z88dk_fastcall
 {
     zx_border(PAPER_BLACK);
+
     draw_main_menu();
 }
 

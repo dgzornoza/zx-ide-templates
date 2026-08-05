@@ -6,6 +6,7 @@
 #include "system/main_menu.h"
 #include "system/define_keys_menu.h"
 #include "gameplay/level1.h"
+#include "../core/utils/sp1_utils.h"
 
 static GameState active_game_state;
 
@@ -51,6 +52,10 @@ void scene_dispatcher_update(void) __z88dk_fastcall
     if (game_state != active_game_state)
     {
         active_game_state = game_state;
+
+        /* Retire the previous scene's tile references before the new scene draws anything */
+        sp1_clear_tile_buffer();
+
         init_active_scene();
     }
 

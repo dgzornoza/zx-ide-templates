@@ -16,7 +16,7 @@ static uint8_t player_x = PLAYER_INITIAL_X;
 static uint8_t player_y = PLAYER_INITIAL_Y;
 static const struct sp1_Rect player_clip = {0, 0, 32, 24};
 
-void player_init(uint8_t player_id) __z88dk_fastcall
+void player_init(PlayerId player_id) __z88dk_fastcall
 {
     (void)player_id; // not used currently
     player_sprite = sp1_CreateSpr(SP1_DRAW_LOAD1LB, SP1_TYPE_1BYTE, 3, (int)sprites_player_spritesheet_ship_base, 0);
@@ -26,7 +26,7 @@ void player_init(uint8_t player_id) __z88dk_fastcall
     player_y = PLAYER_INITIAL_Y;
 }
 
-void player_update(uint8_t player_id) __z88dk_fastcall
+void player_update(PlayerId player_id) __z88dk_fastcall
 {
     /* Per-frame tick for a player entity. Two phases, in this order:
      *   1. logic  - read input, advance position

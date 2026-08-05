@@ -15,6 +15,11 @@
 
 // --- Game-level constants ---
 
+// SCREEN_COLOR: game screen color
+#ifndef SCREEN_COLOR
+#define SCREEN_COLOR INK_WHITE | PAPER_BLACK
+#endif
+
 // ALLOWED_GAME_PLAYERS: number of allowed simultaneous players.
 // This is a game-level concept: how many players the game supports. The input
 // manager sizes its player array from this value.
