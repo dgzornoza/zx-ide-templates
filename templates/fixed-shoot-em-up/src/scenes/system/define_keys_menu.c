@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <input.h>
-#include <input/input_zx.h>
 
 #include "../../z88dk_headers.h"
 #include "../../game_state.h"

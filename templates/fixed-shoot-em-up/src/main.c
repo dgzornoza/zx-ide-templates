@@ -4,8 +4,6 @@
 #include "scenes/scene_dispatcher.h"
 #include <intrinsic.h>
 
-const struct sp1_Rect game_area = {0, 0, 32, 24};
-
 int main(void)
 {
     im2_setup();
