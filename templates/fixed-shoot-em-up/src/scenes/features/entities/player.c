@@ -4,7 +4,7 @@
 #include "../../../core/input/input_manager.h"
 
 #define PLAYER_INITIAL_X 120
-#define PLAYER_INITIAL_Y 160
+#define PLAYER_INITIAL_Y 170
 #define PLAYER_SPEED_PIXELS 1
 #define PLAYER_MIN_X 8
 #define PLAYER_MAX_X 240
@@ -19,7 +19,7 @@ static const struct sp1_Rect player_clip = {0, 0, 32, 24};
 void player_init(PlayerId player_id) __z88dk_fastcall
 {
     (void)player_id; // not used currently
-    player_sprite = sp1_CreateSpr(SP1_DRAW_LOAD1LB, SP1_TYPE_1BYTE, 3, (int)sprites_player_spritesheet_ship_base, 0);
+    player_sprite = sp1_CreateSpr(SP1_DRAW_LOAD1LB, SP1_TYPE_1BYTE, 2, (int)sprites_player_spritesheet_ship_base, 0);
     sp1_AddColSpr(player_sprite, SP1_DRAW_LOAD1RB, SP1_TYPE_1BYTE, 0, 0);
 
     player_x = PLAYER_INITIAL_X;

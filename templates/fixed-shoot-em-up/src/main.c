@@ -27,10 +27,22 @@ int main(void)
             intrinsic_halt();
         }
 
-        /** upadte scene dispatcher */
+        /** update scene dispatcher */
         scene_dispatcher_update();
 
         /** update sp1 graphics */
         sp1_UpdateNow();
+
+        // uint16_t last_tick = GLOBAL_TIMER_ABS_TICKS;
+
+        // // Lógica SIEMPRE
+        // scene_dispatcher_update();
+
+        // // Render SOLO cuando toca
+        // if (GLOBAL_TIMER_ABS_TICKS != last_tick)
+        // {
+        //     sp1_UpdateNow();
+        //     last_tick = GLOBAL_TIMER_ABS_TICKS;
+        // }
     }
 }
