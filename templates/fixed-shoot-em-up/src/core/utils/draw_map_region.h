@@ -5,7 +5,7 @@
 
 /**
  * Configuration structure for drawing a tiled map region.
- * Set the fields in draw_map_config before calling any draw_map_* function.
+ * Set the fields in draw_map_config before calling draw_map_region().
  */
 typedef struct
 {
@@ -27,44 +27,24 @@ typedef struct
      * Base SP1 tile-slot index used by draw_map_region() to register each tile via sp1_TileEntry.
      * The effective slot for tile N is (sp1_start_tile_entry_index + N).
      * Use distinct ranges for different maps to avoid slot collisions.
-     * NOTE: only used by draw_map_region(). draw_map_static_region() and
-     * draw_map_static_region_mirrored() always use the volatile slot 255 and ignore this field.
      */
     uint8_t sp1_start_tile_entry_index;
 } DrawMapRegionConfig;
 
 /**
- * Global configuration used by all draw_map_* functions.
- * Populate this struct before calling any draw_map_* function.
+ * Global configuration used by draw_map_region().
+ * Populate this struct before calling draw_map_region().
  */
 extern DrawMapRegionConfig draw_map_config;
 
 /**
- * Draws a static map region using SP1 tile data and attributes.
- * Uses a single Tile ID (255) as a "volatile" slot for immediate rendering.
- * Note: If the tile is redrawn or a sprite passes over it, the tile will contain garbage.
- * Use ONLY for regions that do not change and where nothing will overlap.
- *
- * Note: Set the fields in draw_map_config before calling this function
- */
-extern void draw_map_static_region(void);
-
-/**
- * Draws a horizontally mirrored static map region using SP1 tile data and attributes.
- * Uses a single Tile ID (255) as a "volatile" slot, inverting each tile's graphics.
- * Note: If the tile is redrawn or a sprite passes over it, the tile will contain garbage.
- * Use ONLY for regions that do not change and where nothing will overlap.
- *
- * @remarks Set the fields in draw_map_config before calling any draw_map_* function.
- */
-extern void draw_map_static_region_mirrored(void);
-
-/**
  * Draws a Tiled-exported tile map region using SP1 tile data and attributes.
- * Tiles are stored at their tile_index slot. Calling again with the same indices overwrites them.
- * Manage game map tile indices carefully to avoid unintended overwrites.
+ * Each unique tile index in the map gets its own SP1 slot (computed as
+ * sp1_start_tile_entry_index + tile_index).
+ * The index can be overwritten with another map if it's considered static in a scene
+ * and doesn't need to be invalidated (e.g., HUD, fixed/immobile tiles)
  *
- * Note: Set the fields in draw_map_config before calling this function
+ * Note: Set the fields in draw_map_config before calling this function.
  */
 extern void draw_map_region(void);
 
