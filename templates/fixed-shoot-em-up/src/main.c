@@ -33,6 +33,7 @@ int main(void)
         /** update sp1 graphics */
         sp1_UpdateNow();
 
+        // Alternativa a probar ----------------------------------
         // uint16_t last_tick = GLOBAL_TIMER_ABS_TICKS;
 
         // // Lógica SIEMPRE

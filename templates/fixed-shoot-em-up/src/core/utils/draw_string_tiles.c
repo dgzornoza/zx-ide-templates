@@ -26,13 +26,8 @@ void draw_string_tiles(uint8_t row, uint8_t col, uint8_t attr, const char *str) 
         len = max_len;
     }
 
-    /* Mark the row segment dirty in one update-list entry. Subsequent
-     * sp1_PrintAt calls only mutate the tile buffer without re-invalidating. */
-    struct sp1_Rect rect;
-    rect.row = row;
-    rect.col = col;
-    rect.width = len;
-    rect.height = 1u;
+    /* Mark the row segment dirty in one update-list entry. */
+    const struct sp1_Rect rect = {row, col, len, 1};
     sp1_Invalidate(&rect);
 
     /* Write glyphs to the tile buffe */

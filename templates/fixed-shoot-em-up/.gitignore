@@ -21,6 +21,13 @@
 *.c.lis
 
 # -----------------------------------------
+# Exceptions: tracked assets under src/data/
+# -----------------------------------------
+# Data files committed alongside source (compressed tiles, tilemaps, etc.)
+# take precedence over the generic *.bin ignore above.
+!src/data/**/*.bin
+
+# -----------------------------------------
 # Common output directories (make)
 # -----------------------------------------
 build/

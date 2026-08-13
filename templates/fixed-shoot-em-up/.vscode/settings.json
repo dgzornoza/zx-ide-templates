@@ -10,5 +10,4 @@
     "C_Cpp.default.includePath": [
         "/opt/z88dk/include/_DEVELOPMENT/common"
     ],
-    "zxide.z88dk.useAsmDebug": false
 }

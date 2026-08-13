@@ -36,4 +36,8 @@
 #define SYS_SCREEN_CHARS_HEIGHT (SYS_SCREEN_HEIGHT / SYS_CHAR_SIZE)
 #define SYS_SCREEN_CHARS_HEIGHT_BASE_0 (SYS_SCREEN_HEIGHT / SYS_CHAR_SIZE - 1)
 
+// ZX Spectrum 48K fixed addresses (hardware-level, not configurable)
+#define SYS_SCREEN_PIXEL_ADDR 0x4000  // pixel bitmap start (6144 bytes)
+#define SYS_SCREEN_ATTRS_ADDR 0x5800  // attribute bitmap start (768 bytes)
+
 #endif // __CORE_SYSTEM_DEFINITIONS_H__
