@@ -5,7 +5,7 @@
 #include "../../z88dk_headers.h"
 #include "../../game_state.h"
 #include "../../core/input/input_manager.h"
-#include "../../core/utils/draw_string_tiles.h"
+#include "../../core/utils/sp1_utils.h"
 
 #define MAIN_MENU_START_COL 10u
 
@@ -30,12 +30,12 @@ static void draw_main_menu(void) __z88dk_fastcall
     for (uint8_t i = 0u; i < MAIN_MENU_OPTIONS_COUNT; i++)
     {
         const uint8_t attr = (i == menu_option_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
-        draw_string_tiles(main_menu_option_rows[i], MAIN_MENU_START_COL, attr, main_menu_option_labels[i]);
+        draw_string(main_menu_option_rows[i], MAIN_MENU_START_COL, attr, main_menu_option_labels[i]);
     }
 
-    draw_string_tiles(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
-    draw_string_tiles(20, 0, MENU_ATTR, COPYRIGHT_LABEL_1);
-    draw_string_tiles(22, 15, MENU_ATTR, COPYRIGHT_LABEL_2);
+    draw_string(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
+    draw_string(20, 0, MENU_ATTR, COPYRIGHT_LABEL_1);
+    draw_string(22, 15, MENU_ATTR, COPYRIGHT_LABEL_2);
 }
 
 static void select_main_menu_option(uint8_t index) __z88dk_fastcall
@@ -49,9 +49,9 @@ static void select_main_menu_option(uint8_t index) __z88dk_fastcall
     }
 
     const uint8_t attr_prev = MENU_ATTR;
-    draw_string_tiles(main_menu_option_rows[previous], MAIN_MENU_START_COL, attr_prev, main_menu_option_labels[previous]);
+    draw_string(main_menu_option_rows[previous], MAIN_MENU_START_COL, attr_prev, main_menu_option_labels[previous]);
     const uint8_t attr_cur = MENU_ATTR_INVERSE;
-    draw_string_tiles(main_menu_option_rows[menu_option_selected], MAIN_MENU_START_COL, attr_cur, main_menu_option_labels[menu_option_selected]);
+    draw_string(main_menu_option_rows[menu_option_selected], MAIN_MENU_START_COL, attr_cur, main_menu_option_labels[menu_option_selected]);
 }
 
 void main_menu_scene_init(void) __z88dk_fastcall

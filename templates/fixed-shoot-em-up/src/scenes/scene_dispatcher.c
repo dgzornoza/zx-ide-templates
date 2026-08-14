@@ -54,7 +54,7 @@ void scene_dispatcher_update(void) __z88dk_fastcall
         active_game_state = game_state;
 
         /* Retire the previous scene's tile references before the new scene draws anything */
-        sp1_clear_tile_buffer();
+        sp1_clear_screen_tiles();
 
         init_active_scene();
     }

@@ -20,6 +20,15 @@
 #define SCREEN_COLOR INK_WHITE | PAPER_BLACK
 #endif
 
+// MENU ATTRIBUTES
+#ifndef MENU_ATTR
+#define MENU_ATTR (INK_WHITE | PAPER_BLACK)
+#endif
+
+#ifndef MENU_ATTR_INVERSE
+#define MENU_ATTR_INVERSE (INK_BLACK | PAPER_WHITE)
+#endif
+
 // ALLOWED_GAME_PLAYERS: number of allowed simultaneous players.
 // This is a game-level concept: how many players the game supports. The input
 // manager sizes its player array from this value.
@@ -31,6 +40,7 @@
 #error "ALLOWED_GAME_PLAYERS must be 1 or 2 currently"
 #endif
 
+// GAME USED KEYS
 /**
  * Compile-time bitmask of which input actions are emitted into input_poll.
  * Bit positions are exposed as GAME_KEY_*_BIT macros so the preprocessor
@@ -50,6 +60,8 @@
 #ifndef GAME_USED_KEYS
 #define GAME_USED_KEYS (GAME_KEY_LEFT_BIT | GAME_KEY_RIGHT_BIT | GAME_KEY_UP_BIT | GAME_KEY_DOWN_BIT | GAME_KEY_FIRE1_BIT)
 #endif
+
+// PLAYERS
 
 /**
  * Player identifier type.

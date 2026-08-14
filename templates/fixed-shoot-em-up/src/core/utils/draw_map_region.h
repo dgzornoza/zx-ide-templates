@@ -46,6 +46,6 @@ extern DrawMapRegionConfig draw_map_config;
  *
  * Note: Set the fields in draw_map_config before calling this function.
  */
-extern void draw_map_region(void);
+void draw_map_region(void);
 
 #endif // __CORE_UTILS_DRAW_MAP_REGION_H__

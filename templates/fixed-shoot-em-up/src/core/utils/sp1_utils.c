@@ -3,9 +3,18 @@
 #include "../game_definitions.h"
 #include "sp1_utils.h"
 
-void sp1_clear_tile_buffer(void) __z88dk_fastcall
+void sp1_clear_screen_tiles(void) __z88dk_fastcall
 {
     const struct sp1_Rect game_area = {0, 0, SYS_SCREEN_CHARS_WIDTH, SYS_SCREEN_CHARS_HEIGHT};
 
     sp1_ClearRect(&game_area, SCREEN_COLOR, (uint16_t)' ', SP1_RFLAG_TILE | SP1_RFLAG_COLOUR);
+}
+
+void draw_string(uint8_t row, uint8_t col, uint8_t attr, char *str) __z88dk_callee
+{
+    struct sp1_Rect rect = {row, col, 32, 1};
+    struct sp1_pss ps = {&rect, SP1_PSSFLAG_INVALIDATE, 0, 0, SP1_ATTR_TRANS, attr, 0, 0};
+
+    sp1_SetPrintPos(&ps, 0, 0);
+    sp1_PrintString(&ps, str);
 }

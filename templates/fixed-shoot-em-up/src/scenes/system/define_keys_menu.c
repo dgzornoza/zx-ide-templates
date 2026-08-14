@@ -4,7 +4,8 @@
 #include "../../z88dk_headers.h"
 #include "../../game_state.h"
 #include "../../core/input/input_manager.h"
-#include "../../core/utils/draw_string_tiles.h"
+#include "../../core/game_definitions.h"
+#include "../../core/utils/sp1_utils.h"
 
 #define DEFINE_KEYS_START_COL 10u
 #define DEFINE_KEYS_BOUND_CHAR_COL 20u
@@ -29,12 +30,12 @@ static uint8_t define_keys_wait_release = 0u;
 static void draw_define_keys_row(uint8_t index) __z88dk_fastcall
 {
     const uint8_t attr = (index == menu_option_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
-    draw_string_tiles(define_keys_menu_option_rows[index], DEFINE_KEYS_START_COL, attr, define_keys_menu_option_labels[index]);
+    draw_string(define_keys_menu_option_rows[index], DEFINE_KEYS_START_COL, attr, define_keys_menu_option_labels[index]);
 
     const char ch = define_keys_bound_chars[index];
     define_keys_bound_char_text[0] = (ch == ' ' || ch == 0) ? '_' : ch;
     define_keys_bound_char_text[1] = '\0';
-    draw_string_tiles(define_keys_menu_option_rows[index], DEFINE_KEYS_BOUND_CHAR_COL, attr, define_keys_bound_char_text);
+    draw_string(define_keys_menu_option_rows[index], DEFINE_KEYS_BOUND_CHAR_COL, attr, define_keys_bound_char_text);
 }
 
 /** Draw define keys menu */
@@ -63,6 +64,7 @@ static void select_define_keys_option(uint8_t index) __z88dk_fastcall
     draw_define_keys_row(menu_option_selected);
 }
 
+/** Init function */
 void define_keys_menu_scene_init(void) __z88dk_fastcall
 {
     define_keys_bindings.left = 0u;
@@ -75,6 +77,7 @@ void define_keys_menu_scene_init(void) __z88dk_fastcall
     draw_define_keys_menu();
 }
 
+/** update function */
 void define_keys_menu_scene_update(void) __z88dk_fastcall
 {
     const int ch = in_inkey();
