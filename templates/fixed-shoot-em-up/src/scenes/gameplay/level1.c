@@ -11,6 +11,8 @@ void level1_scene_init(void) __z88dk_fastcall
     player_init(PLAYER_1);
 
     hud_init();
+
+    // score_init();
 }
 
 void level1_scene_update(void) __z88dk_fastcall
@@ -27,5 +29,5 @@ void level1_scene_update(void) __z88dk_fastcall
 
     player_update(PLAYER_1);
 
-    score_update();
+    // score_update();
 }

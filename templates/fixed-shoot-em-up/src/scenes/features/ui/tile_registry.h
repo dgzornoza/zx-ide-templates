@@ -20,7 +20,7 @@
 
 // --- CUSTOM / TILESET SPACE (128 - 255) ---
 // Add here the identifiers for your backgrounds, HUD, etc.
-#define TILE_HUD_BASE 128 // 106 tiles (128-233)
+#define TILE_HUD_START 128 // 106 tiles (128-233)
 // #define TILE_BACKGROUND_BASE     138  // Ex: 50 tiles (138-187)
 
 #endif // __SCENES_FEATURES_UI_TILE_REGISTRY_H__

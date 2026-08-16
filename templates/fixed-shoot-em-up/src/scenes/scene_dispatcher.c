@@ -44,6 +44,9 @@ static void init_active_scene(void) __z88dk_fastcall
 void scene_dispatcher_init(void) __z88dk_fastcall
 {
     active_game_state = game_state;
+    /* TODO: Temporal for testing custom scenes */
+    // sp1_clear_screen_tiles();
+
     init_active_scene();
 }
 
