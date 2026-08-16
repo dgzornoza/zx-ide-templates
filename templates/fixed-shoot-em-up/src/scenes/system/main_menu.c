@@ -7,17 +7,16 @@
 #include "../../core/input/input_manager.h"
 #include "../../core/utils/sp1_utils.h"
 
-#define MAIN_MENU_START_COL 10u
+#define START_COL 10u
+#define OPTIONS_COUNT 5u
 
 // copyright
 #define COPYRIGHT_LABEL_0 "(C) 2026 David Gonzalez"
 #define COPYRIGHT_LABEL_1 "fixed-shoot-em-up"
 #define COPYRIGHT_LABEL_2 "powered by Zx-Ide"
 
-#define MAIN_MENU_OPTIONS_COUNT 5u
-
-static const uint8_t main_menu_option_rows[MAIN_MENU_OPTIONS_COUNT] = {4, 7, 9, 11, 13};
-static const char *const main_menu_option_labels[MAIN_MENU_OPTIONS_COUNT] = {
+static const uint8_t menu_option_rows[OPTIONS_COUNT] = {4, 7, 9, 11, 13};
+static const char *const menu_option_labels[OPTIONS_COUNT] = {
     "0 Jugar", "1 Keyboard", "2 Kempston", "3 Sinclair", "4 Define keys"};
 
 // state
@@ -25,12 +24,10 @@ static uint8_t menu_option_selected = 1u;
 
 static void draw_main_menu(void) __z88dk_fastcall
 {
-    zx_cls(PAPER_BLACK);
-
-    for (uint8_t i = 0u; i < MAIN_MENU_OPTIONS_COUNT; i++)
+    for (uint8_t i = 0u; i < OPTIONS_COUNT; i++)
     {
         const uint8_t attr = (i == menu_option_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
-        draw_string(main_menu_option_rows[i], MAIN_MENU_START_COL, attr, main_menu_option_labels[i]);
+        draw_string(menu_option_rows[i], START_COL, attr, menu_option_labels[i]);
     }
 
     draw_string(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
@@ -49,20 +46,22 @@ static void select_main_menu_option(uint8_t index) __z88dk_fastcall
     }
 
     const uint8_t attr_prev = MENU_ATTR;
-    draw_string(main_menu_option_rows[previous], MAIN_MENU_START_COL, attr_prev, main_menu_option_labels[previous]);
+    draw_string(menu_option_rows[previous], START_COL, attr_prev, menu_option_labels[previous]);
     const uint8_t attr_cur = MENU_ATTR_INVERSE;
-    draw_string(main_menu_option_rows[menu_option_selected], MAIN_MENU_START_COL, attr_cur, main_menu_option_labels[menu_option_selected]);
+    draw_string(menu_option_rows[menu_option_selected], START_COL, attr_cur, menu_option_labels[menu_option_selected]);
 }
 
 void main_menu_scene_init(void) __z88dk_fastcall
 {
-    zx_border(PAPER_BLACK);
-
     draw_main_menu();
 }
 
 void main_menu_scene_update(void) __z88dk_fastcall
 {
+    // option 0 for play
+    // option 4 for define keys
+    // options 1,2,3 to select game input
+
     if (input_keyboard_pressed(IN_KEY_SCANCODE_0))
     {
         game_state = STATE_PLAYING;

@@ -17,7 +17,7 @@
 
 // SCREEN_COLOR: game screen color
 #ifndef SCREEN_COLOR
-#define SCREEN_COLOR INK_WHITE | PAPER_BLACK
+#define SCREEN_COLOR PAPER_BLACK
 #endif
 
 // MENU ATTRIBUTES

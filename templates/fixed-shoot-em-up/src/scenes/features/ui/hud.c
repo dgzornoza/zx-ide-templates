@@ -4,13 +4,13 @@
 #include "../../../core/utils/draw_map_region.h"
 #include "../../../core/system_definitions.h"
 #include "../../../core/utils/zx0.h"
-// #include <compress/zx0.h>
+#include "../../../data/hud/hud-map.h"
 
 // hud position
 #define HUD_X_OFFSET 0
 #define HUD_Y_OFFSET 0
-#define HUD_WIDTH 0
-#define HUD_HEIGHT 0
+#define HUD_WIDTH 32
+#define HUD_HEIGHT 4
 
 void hud_init(void) __z88dk_fastcall
 {
@@ -29,7 +29,7 @@ void hud_init(void) __z88dk_fastcall
     /* Sets up draw_map_config from the HUD asset headers and draws the HUD
      * in the top-left region of the screen.
      */
-    // draw_map_config.tiles_map = (const uint8_t *)hud_map;
+    draw_map_config.tiles_map = (const uint8_t *)hud_map;
     draw_map_config.map_width = HUD_WIDTH;
     draw_map_config.map_height = HUD_HEIGHT;
     draw_map_config.tiles_data = (const uint8_t *)SYS_SCREEN_PIXEL_ADDR;

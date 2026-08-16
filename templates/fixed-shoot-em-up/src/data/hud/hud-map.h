@@ -1,0 +1,14 @@
+
+#ifndef __DATA_HUD_MAP_H__
+#define __DATA_HUD_MAP_H__
+
+#include <stdint.h>
+
+// Map: hud-map  (32 x 4 tiles)
+#define HUD_MAP_WIDTH 32
+#define HUD_MAP_HEIGHT 4
+#define HUD_MAP_SIZE 128
+#define HUD_MAP_TILES_COUNT 128
+extern uint8_t hud_map[4][32];
+
+#endif // __DATA_HUD_MAP_H__

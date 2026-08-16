@@ -2,6 +2,8 @@
 #define __SCENES_FEATURES_UI_HUD_H__
 
 /**
+ * Init lifecycle function
+ *
  * Initializes the HUD entity. Must be called exactly once from the
  * owning scene's init.
  *
