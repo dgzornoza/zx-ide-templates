@@ -73,8 +73,8 @@ for (uint8_t i = 1; i <= 64; i++)
 /* Better: direct global struct field in inner loop */
 for (uint8_t index = 0; index < draw_map_config.map_width; index++)
 {
-  const uint8_t *tile_data = draw_map_config.tiles_data + ((uint16_t)index * 8U);
-  sp1_TileEntry(index + 1U, tile_data);
+  uint8_t sp1_slot = draw_map_config.sp1_start_tile_entry_index + index;
+  sp1_TileEntry(sp1_slot, tile_gfx[sp1_slot]);
 }
 ```
 

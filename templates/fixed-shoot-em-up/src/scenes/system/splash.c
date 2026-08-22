@@ -42,7 +42,7 @@ void splash_scene_init(void) __z88dk_fastcall
 
     /* Print the prompt on row 20 with the FLASH attribute bit so the ULA
      * toggles INK/PAPER automatically at ~2 Hz - zero per-frame CPU work. */
-    draw_string(PROMPT_ROW, PROMPT_COL, INK_WHITE | PAPER_BLACK | FLASH, PROMPT_TEXT);
+    sp1_draw_string(PROMPT_ROW, PROMPT_COL, INK_WHITE | PAPER_BLACK | FLASH, PROMPT_TEXT);
 }
 
 void splash_scene_update(void) __z88dk_fastcall

@@ -27,12 +27,12 @@ static void draw_main_menu(void) __z88dk_fastcall
     for (uint8_t i = 0u; i < OPTIONS_COUNT; i++)
     {
         const uint8_t attr = (i == menu_option_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
-        draw_string(menu_option_rows[i], START_COL, attr, menu_option_labels[i]);
+        sp1_draw_string(menu_option_rows[i], START_COL, attr, menu_option_labels[i]);
     }
 
-    draw_string(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
-    draw_string(20, 0, MENU_ATTR, COPYRIGHT_LABEL_1);
-    draw_string(22, 15, MENU_ATTR, COPYRIGHT_LABEL_2);
+    sp1_draw_string(18, 0, MENU_ATTR, COPYRIGHT_LABEL_0);
+    sp1_draw_string(20, 0, MENU_ATTR, COPYRIGHT_LABEL_1);
+    sp1_draw_string(22, 15, MENU_ATTR, COPYRIGHT_LABEL_2);
 }
 
 static void select_main_menu_option(uint8_t index) __z88dk_fastcall
@@ -46,9 +46,9 @@ static void select_main_menu_option(uint8_t index) __z88dk_fastcall
     }
 
     const uint8_t attr_prev = MENU_ATTR;
-    draw_string(menu_option_rows[previous], START_COL, attr_prev, menu_option_labels[previous]);
+    sp1_draw_string(menu_option_rows[previous], START_COL, attr_prev, menu_option_labels[previous]);
     const uint8_t attr_cur = MENU_ATTR_INVERSE;
-    draw_string(menu_option_rows[menu_option_selected], START_COL, attr_cur, menu_option_labels[menu_option_selected]);
+    sp1_draw_string(menu_option_rows[menu_option_selected], START_COL, attr_cur, menu_option_labels[menu_option_selected]);
 }
 
 void main_menu_scene_init(void) __z88dk_fastcall

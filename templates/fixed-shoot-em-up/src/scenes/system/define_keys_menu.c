@@ -26,13 +26,13 @@ static void draw_define_keys_row(uint8_t index) __z88dk_fastcall
 {
     // draw menu option
     const uint8_t attr = (index == menu_option_selected) ? MENU_ATTR_INVERSE : MENU_ATTR;
-    draw_string(menu_option_rows[index], START_COL, attr, menu_option_labels[index]);
+    sp1_draw_string(menu_option_rows[index], START_COL, attr, menu_option_labels[index]);
 
     // print selected key
     const char bound_char = define_keys_bound_chars[index];
     const char print_char = (bound_char == ' ' || bound_char == 0) ? '_' : bound_char;
     char print_str[2] = {print_char, '\0'};
-    draw_string(menu_option_rows[index], BOUND_CHAR_COL, attr, print_str);
+    sp1_draw_string(menu_option_rows[index], BOUND_CHAR_COL, attr, print_str);
 }
 
 /** Function for set option for define key */

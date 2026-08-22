@@ -22,6 +22,6 @@ void sp1_clear_screen_tiles(void) __z88dk_fastcall;
  * @remarks: the caller can register custom font_1 ASCII glyphs
  * via sp1_TileEntry, otherwise default font is used.
  */
-void draw_string(uint8_t row, uint8_t col, uint8_t attr, const char *str) __z88dk_callee;
+void sp1_draw_string(uint8_t row, uint8_t col, uint8_t attr, const char *str) __z88dk_callee;
 
 #endif // __CORE_UTILS_SP1_UTILS_H__

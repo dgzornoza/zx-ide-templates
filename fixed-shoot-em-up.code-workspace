@@ -1,6 +1,6 @@
 {
     "folders": [
-		{
+        {
             "name": "docs",
             "path": "docs"
         },
@@ -8,10 +8,9 @@
             "name": "fixed-shoot-em-up",
             "path": "templates/fixed-shoot-em-up"
         },
-
     ],
-    "settings": {		
-		"zxide.z88dk.useAsmDebug": false,
+    "settings": {
+        "zxide.z88dk.useAsmDebug": true,
         "eslint.workingDirectories": [
             {
                 "directory": "fixed-shoot-em-up"

@@ -1,5 +1,5 @@
 {
-    "name": "gamewatch-template",
+    "name": "fixed-shoot-em-up",
     "image": "dgzornoza/zxide-dev:latest",
     "containerUser": "vscode",
     "runArgs": [

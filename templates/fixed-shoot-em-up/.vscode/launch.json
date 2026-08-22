@@ -19,11 +19,9 @@
             },
             "z88dkv2": [
                 {
-                    "path": "./bin/**/*.lis",
+                    "path": "./bin/fixed-shoot-em-up.source.lis",
                     "mapFile": "./bin/fixed-shoot-em-up.map",
-                    "srcDirs": [
-                        ""
-                    ]
+                    "srcDirs": []
                 }
             ],
             "history": {
@@ -34,7 +32,7 @@
                 // "-rmv",
                 // "-mv 0xc000 0x100"
             ],
-            "startAutomatically": true,
+            "startAutomatically": false,
             "rootFolder": "${workspaceFolder}",
             "load": "./bin/fixed-shoot-em-up.sna",
             "smallValuesMaximum": 513,
@@ -53,11 +51,9 @@
             },
             "z88dkv2": [
                 {
-                    "path": "./bin/**/*.lis",
+                    "path": "./bin/fixed-shoot-em-up.source.lis",
                     "mapFile": "./bin/fixed-shoot-em-up.map",
-                    "srcDirs": [
-                        ""
-                    ]
+                    "srcDirs": []
                 }
             ],
             "history": {
@@ -87,11 +83,9 @@
             },
             "z88dkv2": [
                 {
-                    "path": "./bin/**/*.lis",
+                    "path": "./bin/fixed-shoot-em-up.source.lis",
                     "mapFile": "./bin/fixed-shoot-em-up.map",
-                    "srcDirs": [
-                        ""
-                    ]
+                    "srcDirs": []
                 }
             ],
             "history": {
