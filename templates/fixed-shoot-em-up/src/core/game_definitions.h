@@ -15,9 +15,12 @@
 
 // --- Game-level constants ---
 
-// SCREEN_COLOR: game screen color
-#ifndef SCREEN_COLOR
-#define SCREEN_COLOR PAPER_BLACK
+// DEFAULT_SCREEN_COLORS: game screen colors
+#ifndef DEFAULT_SCREEN_INK_COLOR
+#define DEFAULT_SCREEN_INK_COLOR INK_BLACK
+#endif
+#ifndef DEFAULT_SCREEN_PAPER_COLOR
+#define DEFAULT_SCREEN_PAPER_COLOR PAPER_BLACK
 #endif
 
 // MENU ATTRIBUTES

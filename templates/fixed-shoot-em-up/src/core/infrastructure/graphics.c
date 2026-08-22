@@ -3,6 +3,7 @@
 #include "../system_definitions.h"
 #include "../utils/zx0.h"
 #include <string.h>
+#include "../game_definitions.h"
 
 // Buffer graphics, Lives in BSS, zero-initialised on boot so unused slots read as 0x00.
 uint8_t tile_gfx[256][8];
@@ -10,6 +11,9 @@ uint8_t tile_attr[256];
 
 void graphics_register_tile_compressed_range(uint8_t start_slot, uint8_t count, const uint8_t *compressed)
 {
+    // set invisible attribute for decompress
+    zx_cls_attr(DEFAULT_SCREEN_INK_COLOR | DEFAULT_SCREEN_PAPER_COLOR);
+
     // Decompress directly into screen pixel memory. The screen is 6144
     // bytes, sp1_TileEntry can register 256 slots, so (256 * 8) + 256 bytes fits in screen memory.
     uint8_t *screen = (uint8_t *)SYS_SCREEN_PIXEL_ADDR;

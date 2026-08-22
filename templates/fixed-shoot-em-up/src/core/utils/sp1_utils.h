@@ -4,8 +4,8 @@
 /**
  * Clears the SP1 tiles for the entire visible screen.
  *
- * Fills and invalidate every (row, col) cell with the blank tile (' ') at SCREEN_COLOR
- * so the cleared state reaches screen memory in the same call.
+ * Fills and invalidate every (row, col) cell with the blank tile (' ') at default
+ * screen color, so the cleared state reaches screen memory in the same call.
  * After this returns SP1 has no memory of any prior scene's tiles.
  */
 void sp1_clear_screen_tiles(void) __z88dk_fastcall;

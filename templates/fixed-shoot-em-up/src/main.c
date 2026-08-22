@@ -11,7 +11,7 @@ int main(void)
     im2_setup();
 
     sp1_Initialize(SP1_IFLAG_MAKE_ROTTBL | SP1_IFLAG_OVERWRITE_TILES | SP1_IFLAG_OVERWRITE_DFILE,
-                   SCREEN_COLOR, ' ');
+                   DEFAULT_SCREEN_INK_COLOR | DEFAULT_SCREEN_PAPER_COLOR, ' ');
 
     /** Reset inputs to defaults */
     input_reset_defaults(PLAYER_1);

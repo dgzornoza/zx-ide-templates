@@ -36,11 +36,13 @@ extern uint8_t tile_attr[256];
  * for tilesets with per-tile attributes (HUD, level backgrounds, etc.).
  *
  * Implementation note: decompresses directly into screen pixel memory
- * (SYS_SCREEN_PIXEL_ADDR, 6144 bytes). LIFECYCLE REQUIREMENT: must be
- * called AFTER sp1_ClearRectInv() and BEFORE the next sp1_UpdateNow().
- * The dispatcher guarantees this order on scene transitions. Bytes touched
- * in screen memory are stale for at most one frame and are overwritten by
- * the next sp1_UpdateNow() repainting every invalidated cell from tile_gfx.
+ * (SYS_SCREEN_PIXEL_ADDR, 6144 bytes).
+ *
+ * LIFECYCLE REQUIREMENT: must be called AFTER sp1_ClearRectInv() and BEFORE
+ * the next sp1_UpdateNow(). The dispatcher guarantees this order on scene
+ * transitions. Bytes written into screen pixel memory are stale for at
+ * most one frame and are overwritten by the next sp1_UpdateNow() repainting
+ * every invalidated cell from tile_gfx / tile_attr.
  *
  * @param start_slot  First SP1 slot 0-255, must satisfy start+N <= 256.
  * @param count       Number of slots to write (1-256).
